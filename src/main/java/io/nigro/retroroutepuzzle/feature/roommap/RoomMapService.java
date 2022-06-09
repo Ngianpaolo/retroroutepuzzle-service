@@ -1,5 +1,6 @@
 package io.nigro.retroroutepuzzle.feature.roommap;
 
+import io.nigro.retroroutepuzzle.exception.RoomMapNotFoundException;
 import io.nigro.retroroutepuzzle.feature.roommap.contract.RoomMapContract;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,11 +21,12 @@ public class RoomMapService {
         return roomMapRepository.save(request);
     }
 
-    public List<RoomMapContract> getRoomMaps() {
+    public List<RoomMapContract> getAllRoomMaps() {
         return roomMapRepository.findAllRoomMaps();
     }
 
     public RoomMapContract getRoomMap(String roomMapId) {
-        return roomMapRepository.findRoomMapById(roomMapId).orElseThrow();
+        return roomMapRepository.findRoomMapById(roomMapId)
+                .orElseThrow(RoomMapNotFoundException::new);
     }
 }

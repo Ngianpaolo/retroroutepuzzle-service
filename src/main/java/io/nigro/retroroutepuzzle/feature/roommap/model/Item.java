@@ -7,22 +7,9 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
-public class Room {
-
-    @NotNull
-    private Long id;
+public class Item {
 
     @NotBlank
     private String name;
-
-    private Long south;
-
-    private Long north;
-
-    private Long west;
-
-    private Long east;
-
-    private List<Item> objects;
 
 }
