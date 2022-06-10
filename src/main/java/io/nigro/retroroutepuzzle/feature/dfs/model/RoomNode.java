@@ -1,4 +1,4 @@
-package io.nigro.retroroutepuzzle.feature.route.model;
+package io.nigro.retroroutepuzzle.feature.dfs.model;
 
 import io.nigro.retroroutepuzzle.feature.roommap.model.Item;
 import io.nigro.retroroutepuzzle.feature.roommap.model.Room;
