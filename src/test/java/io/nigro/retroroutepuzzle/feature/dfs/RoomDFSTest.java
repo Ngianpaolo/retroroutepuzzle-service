@@ -1,7 +1,10 @@
 package io.nigro.retroroutepuzzle.feature.dfs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.nigro.retroroutepuzzle.exception.RoomNotFoundException;
 import io.nigro.retroroutepuzzle.feature.roommap.contract.RoomMapContract;
+import io.nigro.retroroutepuzzle.feature.roommap.model.Item;
+import io.nigro.retroroutepuzzle.feature.roommap.model.Room;
 import io.nigro.retroroutepuzzle.feature.route.contract.RouteEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -9,8 +12,10 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Slf4j
 public class RoomDFSTest {
@@ -60,6 +65,82 @@ public class RoomDFSTest {
         assertEquals(RouteEvent.builder().id(5L).room("Bedroom").objectCollected("Pillow").build(), result.get(6));
     }
 
+    @Test
+    void calculateRoomRoute_should_throw_RoomNotFoundException() {
+        var roomDFS = new RoomDFS(List.of(
+                Room.builder().id(1L).name("Sun Room").north(2L).build(),
+                Room.builder().id(2L).name("Living room").south(1L).build()
+        ));
+
+        var notExistingRootRoomId = 4L;
+        var itemsToCollect = new ArrayList<String>();
+        itemsToCollect.add("Knife");
+
+        assertThrows(RoomNotFoundException.class, () -> roomDFS.calculateRoomRoute(notExistingRootRoomId, itemsToCollect));
+
+    }
+
+    @Test
+    void calculateRoomRoute_should_be_tolerant_with_cyclic_graphs_test1() {
+        var roomDFS = new RoomDFS(List.of(
+                Room.builder().id(1L).name("Room1").south(2L).east(4L).build(),
+                Room.builder().id(2L).name("Room2").north(1L).east(3L).build(),
+                Room.builder().id(3L).name("Room3").north(4L).west(2L).build(),
+                Room.builder().id(4L).name("Room4").south(3L).west(1L).objects(List.of(Item.builder().name("Item1").build())).build()
+        ));
+
+        var rootRoomId = 1L;
+        var itemsToCollect = new ArrayList<String>();
+        itemsToCollect.add("Item1");
+
+        var result = roomDFS.calculateRoomRoute(rootRoomId, itemsToCollect);
+
+        assertEquals(RouteEvent.builder().id(rootRoomId).room("Room1").objectCollected("None").build(), result.get(0));
+        assertEquals(RouteEvent.builder().id(2L).room("Room2").objectCollected("None").build(), result.get(1));
+        assertEquals(RouteEvent.builder().id(3L).room("Room3").objectCollected("None").build(), result.get(2));
+        assertEquals(RouteEvent.builder().id(4L).room("Room4").objectCollected("Item1").build(), result.get(3));
+
+    }
+
+    @Test
+    void calculateRoomRoute_should_be_tolerant_with_cyclic_graphs_test2() {
+        var roomDFS = new RoomDFS(List.of(
+                Room.builder().id(1L).name("Room1").south(8L).east(7L).west(2L).build(),
+                Room.builder().id(2L).name("Room2").south(3L).east(1L).build(),
+                Room.builder().id(3L).name("Room3").south(4L).west(2L).build(),
+                Room.builder().id(4L).name("Room4").north(3L).east(5L).objects(List.of(Item.builder().name("Item1").build())).build(),
+                Room.builder().id(5L).name("Room5").west(4L).east(6L).build(),
+                Room.builder().id(6L).name("Room6").north(7L).west(5L).build(),
+                Room.builder().id(7L).name("Room7").west(1L).south(6L).objects(List.of(Item.builder().name("Item2").build())).build(),
+                Room.builder().id(8L).name("Room8").north(1L).objects(List.of(Item.builder().name("Item3").build())).build()
+        ));
+
+        var rootRoomId = 1L;
+        var itemsToCollect = new ArrayList<String>();
+        itemsToCollect.add("Item1");
+        itemsToCollect.add("Item2");
+        itemsToCollect.add("Item3");
+
+        var result = roomDFS.calculateRoomRoute(rootRoomId, itemsToCollect);
+
+        assertEquals(RouteEvent.builder().id(rootRoomId).room("Room1").objectCollected("None").build(), result.get(0));
+        assertEquals(RouteEvent.builder().id(2L).room("Room2").objectCollected("None").build(), result.get(1));
+        assertEquals(RouteEvent.builder().id(3L).room("Room3").objectCollected("None").build(), result.get(2));
+        assertEquals(RouteEvent.builder().id(4L).room("Room4").objectCollected("Item1").build(), result.get(3));
+        assertEquals(RouteEvent.builder().id(5L).room("Room5").objectCollected("None").build(), result.get(4));
+        assertEquals(RouteEvent.builder().id(6L).room("Room6").objectCollected("None").build(), result.get(5));
+        assertEquals(RouteEvent.builder().id(7L).room("Room7").objectCollected("Item2").build(), result.get(6));
+        assertEquals(RouteEvent.builder().id(6L).room("Room6").objectCollected("None").build(), result.get(7));
+        assertEquals(RouteEvent.builder().id(5L).room("Room5").objectCollected("None").build(), result.get(8));
+        assertEquals(RouteEvent.builder().id(4L).room("Room4").objectCollected("None").build(), result.get(9));
+        assertEquals(RouteEvent.builder().id(3L).room("Room3").objectCollected("None").build(), result.get(10));
+        assertEquals(RouteEvent.builder().id(2L).room("Room2").objectCollected("None").build(), result.get(11));
+        assertEquals(RouteEvent.builder().id(rootRoomId).room("Room1").objectCollected("None").build(), result.get(12));
+        assertEquals(RouteEvent.builder().id(8L).room("Room8").objectCollected("Item3").build(), result.get(13));
+
+
+    }
+
     private RoomMapContract loadMapFromJsonFile(String filename) {
         File file = new File(String.format("%s%s.json", path, filename));
         if (!file.exists()) {
@@ -72,7 +153,6 @@ public class RoomDFSTest {
         try {
             return objectMapper.readValue(jsonFile, RoomMapContract.class);
         } catch (IOException e) {
-            log.error("", e);
             return null;
         }
     }

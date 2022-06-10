@@ -1,5 +1,6 @@
 package io.nigro.retroroutepuzzle.feature.dfs;
 
+import io.nigro.retroroutepuzzle.exception.RoomNotFoundException;
 import io.nigro.retroroutepuzzle.feature.dfs.model.RoomNode;
 import io.nigro.retroroutepuzzle.feature.roommap.model.Item;
 import io.nigro.retroroutepuzzle.feature.roommap.model.Room;
@@ -28,11 +29,17 @@ public class RoomDFS {
     }
 
     public List<RouteEvent> calculateRoomRoute(Long roomRootId, List<String> itemsToCollect) {
-        Map<Long, RoomNode> roomNodeMap = getRoomNodeMap();
-        RoomNode roomNodeRoot = roomNodeMap.get(roomRootId);
         roomNodeRouteStack = new Stack<>();
         routeEvent = new ArrayList<>();
+
+        Map<Long, RoomNode> roomNodeMap = getRoomNodeMap();
+        RoomNode roomNodeRoot = roomNodeMap.get(roomRootId);
+
+        if(roomNodeRoot == null) {
+            throw new RoomNotFoundException();
+        }
         calculateDFSRouteEvents(roomNodeRoot, itemsToCollect);
+
         return routeEvent;
     }
 
@@ -49,7 +56,8 @@ public class RoomDFS {
 
         visitedRoomNode.setVisited(true);
 
-        var roomNodeObjects = visitedRoomNode.getObjects()
+        var roomNodeObjects = Optional.ofNullable(visitedRoomNode.getObjects())
+                .orElse(List.of())
                 .stream()
                 .map(Item::getName)
                 .collect(Collectors.toSet());
@@ -80,11 +88,12 @@ public class RoomDFS {
             roomNodeRouteStack.pop();
             if (!roomNodeRouteStack.isEmpty()) {
                 calculateDFSRouteEvents(roomNodeRouteStack.peek(), itemsToCollect);
+            } else {
+                // If the roomNodeRouteStack is empty and all adjacent rooms are yet visited
+                // then it means that there are no other rooms to look for
+                // then the search is finished
+                log.info("No other nodes to visit, these objects could not be found {}", itemsToCollect);
             }
-            // If the roomNodeRouteStack is empty and all adjacent rooms are yet visited
-            // then it means that there are no other rooms to look for
-            // then the search is finished
-            log.info("No other nodes to visit, these objects could not be found {}", itemsToCollect);
         }
     }
 
