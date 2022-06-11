@@ -2,6 +2,9 @@ package io.nigro.retroroutepuzzle.feature.route;
 
 import io.nigro.retroroutepuzzle.feature.roommap.RoomMapRepository;
 import io.nigro.retroroutepuzzle.feature.route.contract.RouteEvent;
+import io.nigro.retroroutepuzzle.feature.route.contract.RouteRequest;
+import io.nigro.retroroutepuzzle.feature.search.RoomTreeSearchType;
+import io.nigro.retroroutepuzzle.feature.search.RouteSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,15 +15,19 @@ public class RouteService {
 
     private final RoomMapRepository roomMapRepository;
 
+    private final RouteSearchService routeSearchService;
+
     @Autowired
-    public RouteService(RoomMapRepository roomMapRepository) {
+    public RouteService(RoomMapRepository roomMapRepository, RouteSearchService routeSearchService) {
         this.roomMapRepository = roomMapRepository;
+        this.routeSearchService = routeSearchService;
     }
 
-    public List<RouteEvent> calculateRoute(String roomMapId,
-                                           String roomId,
-                                           List<String> itemToCollect) {
-        return List.of(RouteEvent.builder().build());
+    public List<RouteEvent> calculateRoute(RouteRequest request, RoomTreeSearchType searchType) {
+        return routeSearchService.getRouteByRoomRootAndItemsToFind(
+                request.getRooms(),
+                request.getStartRoomId(),
+                request.getItemToCollect(),
+                searchType);
     }
-
 }

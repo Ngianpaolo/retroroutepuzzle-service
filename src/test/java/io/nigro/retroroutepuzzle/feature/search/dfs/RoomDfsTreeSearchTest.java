@@ -2,16 +2,14 @@ package io.nigro.retroroutepuzzle.feature.search.dfs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.nigro.retroroutepuzzle.exception.RoomNotFoundException;
-import io.nigro.retroroutepuzzle.feature.roommap.contract.RoomMapContract;
 import io.nigro.retroroutepuzzle.feature.roommap.model.Item;
 import io.nigro.retroroutepuzzle.feature.roommap.model.Room;
 import io.nigro.retroroutepuzzle.feature.route.contract.RouteEvent;
 import io.nigro.retroroutepuzzle.feature.search.RoomTreeSearch;
+import io.nigro.retroroutepuzzle.utils.JsonFileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +24,7 @@ public class RoomDfsTreeSearchTest {
 
     @Test
     void getRouteByRoomRootAndFindItems_should_be_work_withRoomMap1() {
-        var roomMapContract = loadMapFromJsonFile("RoomMap1");
+        var roomMapContract = JsonFileUtil.loadMapFromJsonFile("RoomMap1");
         RoomTreeSearch roomDFS = new RoomDfsTreeSearch(roomMapContract.getRooms());
 
         var rootRoomId = 2L;
@@ -34,7 +32,7 @@ public class RoomDfsTreeSearchTest {
         itemsToCollect.add("Knife");
         itemsToCollect.add("Potted Plant");
 
-        var result = roomDFS.getRouteByRoomRootAndFindItems(rootRoomId, itemsToCollect);
+        var result = roomDFS.getRouteByRoomRootAndItemsToFind(rootRoomId, itemsToCollect);
 
         assertEquals(RouteEvent.builder().id(rootRoomId).room("Dining Room").objectCollected("None").build(), result.get(0));
         assertEquals(RouteEvent.builder().id(1L).room("Hallway").objectCollected("None").build(), result.get(1));
@@ -46,7 +44,7 @@ public class RoomDfsTreeSearchTest {
 
     @Test
     void getRouteByRoomRootAndFindItems_should_be_work_withRoomMap2() {
-        var roomMapContract = loadMapFromJsonFile("RoomMap2");
+        var roomMapContract = JsonFileUtil.loadMapFromJsonFile("RoomMap2");
         RoomTreeSearch roomDFS = new RoomDfsTreeSearch(roomMapContract.getRooms());
 
         var rootRoomId = 4L;
@@ -55,7 +53,7 @@ public class RoomDfsTreeSearchTest {
         itemsToCollect.add("Potted Plant");
         itemsToCollect.add("Pillow");
 
-        var result = roomDFS.getRouteByRoomRootAndFindItems(rootRoomId, itemsToCollect);
+        var result = roomDFS.getRouteByRoomRootAndItemsToFind(rootRoomId, itemsToCollect);
 
         assertEquals(RouteEvent.builder().id(rootRoomId).room("Sun Room").objectCollected("None").build(), result.get(0));
         assertEquals(RouteEvent.builder().id(2L).room("Dining Room").objectCollected("None").build(), result.get(1));
@@ -79,7 +77,7 @@ public class RoomDfsTreeSearchTest {
         var itemsToCollect = new ArrayList<String>();
         itemsToCollect.add("Knife");
 
-        assertThrows(RoomNotFoundException.class, () -> roomDFS.getRouteByRoomRootAndFindItems(notExistingRootRoomId, itemsToCollect));
+        assertThrows(RoomNotFoundException.class, () -> roomDFS.getRouteByRoomRootAndItemsToFind(notExistingRootRoomId, itemsToCollect));
 
     }
 
@@ -96,7 +94,7 @@ public class RoomDfsTreeSearchTest {
         var itemsToCollect = new ArrayList<String>();
         itemsToCollect.add("NotExistingItem");
 
-        var result = roomDFS.getRouteByRoomRootAndFindItems(rootRoomId, itemsToCollect);
+        var result = roomDFS.getRouteByRoomRootAndItemsToFind(rootRoomId, itemsToCollect);
 
         assertEquals(RouteEvent.builder().id(rootRoomId).room("Room1").objectCollected("None").build(), result.get(0));
         assertEquals(RouteEvent.builder().id(4L).room("Room4").objectCollected("None").build(), result.get(1));
@@ -118,7 +116,7 @@ public class RoomDfsTreeSearchTest {
         var itemsToCollect = new ArrayList<String>();
         itemsToCollect.add("Item1");
 
-        var result = roomDFS.getRouteByRoomRootAndFindItems(rootRoomId, itemsToCollect);
+        var result = roomDFS.getRouteByRoomRootAndItemsToFind(rootRoomId, itemsToCollect);
 
         assertEquals(RouteEvent.builder().id(rootRoomId).room("Room1").objectCollected("None").build(), result.get(0));
         assertEquals(RouteEvent.builder().id(4L).room("Room4").objectCollected("Item1").build(), result.get(1));
@@ -138,7 +136,7 @@ public class RoomDfsTreeSearchTest {
         var itemsToCollect = new ArrayList<String>();
         itemsToCollect.add("Item1");
 
-        var result = roomDFS.getRouteByRoomRootAndFindItems(rootRoomId, itemsToCollect);
+        var result = roomDFS.getRouteByRoomRootAndItemsToFind(rootRoomId, itemsToCollect);
 
         assertEquals(RouteEvent.builder().id(rootRoomId).room("Room1").objectCollected("None").build(), result.get(0));
         assertEquals(RouteEvent.builder().id(4L).room("Room4").objectCollected("None").build(), result.get(1));
@@ -166,7 +164,7 @@ public class RoomDfsTreeSearchTest {
         itemsToCollect.add("Item2");
         itemsToCollect.add("Item3");
 
-        var result = roomDFS.getRouteByRoomRootAndFindItems(rootRoomId, itemsToCollect);
+        var result = roomDFS.getRouteByRoomRootAndItemsToFind(rootRoomId, itemsToCollect);
 
         assertEquals(RouteEvent.builder().id(rootRoomId).room("Room1").objectCollected("None").build(), result.get(0));
         assertEquals(RouteEvent.builder().id(8L).room("Room8").objectCollected("Item3").build(), result.get(1));
@@ -178,21 +176,5 @@ public class RoomDfsTreeSearchTest {
         assertEquals(RouteEvent.builder().id(6L).room("Room6").objectCollected("None").build(), result.get(7));
         assertEquals(RouteEvent.builder().id(7L).room("Room7").objectCollected("Item2").build(), result.get(8));
 
-    }
-
-    private RoomMapContract loadMapFromJsonFile(String filename) {
-        File file = new File(String.format("%s%s.json", path, filename));
-        if (!file.exists()) {
-            throw new IllegalStateException();
-        }
-        return convertJsonFileToRoomMap(file);
-    }
-
-    private RoomMapContract convertJsonFileToRoomMap(File jsonFile) {
-        try {
-            return objectMapper.readValue(jsonFile, RoomMapContract.class);
-        } catch (IOException e) {
-            return null;
-        }
     }
 }

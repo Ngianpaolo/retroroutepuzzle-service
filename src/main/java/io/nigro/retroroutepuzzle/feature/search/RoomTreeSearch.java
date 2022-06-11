@@ -22,7 +22,7 @@ public abstract class RoomTreeSearch {
         this.rooms = rooms;
     }
 
-    public List<RouteEvent> getRouteByRoomRootAndFindItems(Long roomRootId, List<String> itemsToCollect) {
+    public List<RouteEvent> getRouteByRoomRootAndItemsToFind(Long roomRootId, List<String> itemsToCollect) {
         initializeDataStructures();
         var roomNodeRoot = initializeRoomGraph(roomRootId);
         calculateRoomRoute(roomNodeRoot, itemsToCollect);

@@ -2,17 +2,15 @@ package io.nigro.retroroutepuzzle.feature.search.bdf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.nigro.retroroutepuzzle.exception.RoomNotFoundException;
-import io.nigro.retroroutepuzzle.feature.roommap.contract.RoomMapContract;
 import io.nigro.retroroutepuzzle.feature.roommap.model.Item;
 import io.nigro.retroroutepuzzle.feature.roommap.model.Room;
 import io.nigro.retroroutepuzzle.feature.route.contract.RouteEvent;
 import io.nigro.retroroutepuzzle.feature.search.RoomTreeSearch;
 import io.nigro.retroroutepuzzle.feature.search.bfs.RoomBfsTreeSearch;
+import io.nigro.retroroutepuzzle.utils.JsonFileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +25,7 @@ public class RoomBfsTreeSearchTest {
 
     @Test
     void getRouteByRoomRootAndFindItems_should_be_work_withRoomMap1() {
-        var roomMapContract = loadMapFromJsonFile("RoomMap1");
+        var roomMapContract = JsonFileUtil.loadMapFromJsonFile("RoomMap1");
         var roomBFS = new RoomBfsTreeSearch(roomMapContract.getRooms());
 
         var rootRoomId = 2L;
@@ -35,7 +33,7 @@ public class RoomBfsTreeSearchTest {
         itemsToCollect.add("Knife");
         itemsToCollect.add("Potted Plant");
 
-        var result = roomBFS.getRouteByRoomRootAndFindItems(rootRoomId, itemsToCollect);
+        var result = roomBFS.getRouteByRoomRootAndItemsToFind(rootRoomId, itemsToCollect);
 
         assertEquals(RouteEvent.builder().id(rootRoomId).room("Dining Room").objectCollected("None").build(), result.get(0));
         assertEquals(RouteEvent.builder().id(1L).room("Hallway").objectCollected("None").build(), result.get(1));
@@ -47,7 +45,7 @@ public class RoomBfsTreeSearchTest {
 
     @Test
     void getRouteByRoomRootAndFindItems_should_be_work_withRoomMap2() {
-        var roomMapContract = loadMapFromJsonFile("RoomMap2");
+        var roomMapContract = JsonFileUtil.loadMapFromJsonFile("RoomMap2");
         var roomBFS = new RoomBfsTreeSearch(roomMapContract.getRooms());
 
         var rootRoomId = 4L;
@@ -56,7 +54,7 @@ public class RoomBfsTreeSearchTest {
         itemsToCollect.add("Potted Plant");
         itemsToCollect.add("Pillow");
 
-        var result = roomBFS.getRouteByRoomRootAndFindItems(rootRoomId, itemsToCollect);
+        var result = roomBFS.getRouteByRoomRootAndItemsToFind(rootRoomId, itemsToCollect);
 
         assertEquals(RouteEvent.builder().id(rootRoomId).room("Sun Room").objectCollected("None").build(), result.get(0));
         assertEquals(RouteEvent.builder().id(2L).room("Dining Room").objectCollected("None").build(), result.get(1));
@@ -84,7 +82,7 @@ public class RoomBfsTreeSearchTest {
         var itemsToCollect = new ArrayList<String>();
         itemsToCollect.add("Knife");
 
-        assertThrows(RoomNotFoundException.class, () -> roomBDF.getRouteByRoomRootAndFindItems(notExistingRootRoomId, itemsToCollect));
+        assertThrows(RoomNotFoundException.class, () -> roomBDF.getRouteByRoomRootAndItemsToFind(notExistingRootRoomId, itemsToCollect));
 
     }
 
@@ -101,7 +99,7 @@ public class RoomBfsTreeSearchTest {
         var itemsToCollect = new ArrayList<String>();
         itemsToCollect.add("NotExistingItem");
 
-        var result = roomBDF.getRouteByRoomRootAndFindItems(rootRoomId, itemsToCollect);
+        var result = roomBDF.getRouteByRoomRootAndItemsToFind(rootRoomId, itemsToCollect);
 
         assertEquals(RouteEvent.builder().id(rootRoomId).room("Room1").objectCollected("None").build(), result.get(0));
         assertEquals(RouteEvent.builder().id(4L).room("Room4").objectCollected("None").build(), result.get(1));
@@ -124,7 +122,7 @@ public class RoomBfsTreeSearchTest {
         var itemsToCollect = new ArrayList<String>();
         itemsToCollect.add("Item1");
 
-        var result = roomBDF.getRouteByRoomRootAndFindItems(rootRoomId, itemsToCollect);
+        var result = roomBDF.getRouteByRoomRootAndItemsToFind(rootRoomId, itemsToCollect);
 
         assertEquals(RouteEvent.builder().id(rootRoomId).room("Room1").objectCollected("None").build(), result.get(0));
         assertEquals(RouteEvent.builder().id(4L).room("Room4").objectCollected("Item1").build(), result.get(1));
@@ -143,7 +141,7 @@ public class RoomBfsTreeSearchTest {
         var itemsToCollect = new ArrayList<String>();
         itemsToCollect.add("Item1");
 
-        var result = roomBDF.getRouteByRoomRootAndFindItems(rootRoomId, itemsToCollect);
+        var result = roomBDF.getRouteByRoomRootAndItemsToFind(rootRoomId, itemsToCollect);
 
         assertEquals(RouteEvent.builder().id(rootRoomId).room("Room1").objectCollected("None").build(), result.get(0));
         assertEquals(RouteEvent.builder().id(4L).room("Room4").objectCollected("None").build(), result.get(1));
@@ -171,7 +169,7 @@ public class RoomBfsTreeSearchTest {
         itemsToCollect.add("Item2");
         itemsToCollect.add("Item3");
 
-        var result = roomBDF.getRouteByRoomRootAndFindItems(rootRoomId, itemsToCollect);
+        var result = roomBDF.getRouteByRoomRootAndItemsToFind(rootRoomId, itemsToCollect);
 
         assertEquals(RouteEvent.builder().id(rootRoomId).room("Room1").objectCollected("None").build(), result.get(0));
         assertEquals(RouteEvent.builder().id(8L).room("Room8").objectCollected("Item3").build(), result.get(1));
@@ -185,21 +183,5 @@ public class RoomBfsTreeSearchTest {
         assertEquals(RouteEvent.builder().id(2L).room("Room2").objectCollected("None").build(), result.get(9));
         assertEquals(RouteEvent.builder().id(3L).room("Room3").objectCollected("None").build(), result.get(10));
         assertEquals(RouteEvent.builder().id(4L).room("Room4").objectCollected("Item1").build(), result.get(11));
-    }
-
-    private RoomMapContract loadMapFromJsonFile(String filename) {
-        File file = new File(String.format("%s%s.json", path, filename));
-        if (!file.exists()) {
-            throw new IllegalStateException();
-        }
-        return convertJsonFileToRoomMap(file);
-    }
-
-    private RoomMapContract convertJsonFileToRoomMap(File jsonFile) {
-        try {
-            return objectMapper.readValue(jsonFile, RoomMapContract.class);
-        } catch (IOException e) {
-            return null;
-        }
     }
 }
