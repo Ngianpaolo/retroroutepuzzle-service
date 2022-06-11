@@ -23,13 +23,13 @@ public abstract class RoomTreeSearch {
     }
 
     public List<RouteEvent> getRouteByRoomRootAndFindItems(Long roomRootId, List<String> itemsToCollect) {
-        initializeDataStructure();
+        initializeDataStructures();
         var roomNodeRoot = initializeRoomGraph(roomRootId);
         calculateRoomRoute(roomNodeRoot, itemsToCollect);
         return routeEvent;
     }
 
-    protected void initializeDataStructure() {
+    protected void initializeDataStructures() {
         routeEvent = new ArrayList<>();
     }
 
