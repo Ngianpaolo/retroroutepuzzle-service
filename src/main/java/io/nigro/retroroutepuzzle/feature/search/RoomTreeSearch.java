@@ -3,6 +3,8 @@ package io.nigro.retroroutepuzzle.feature.search;
 import io.nigro.retroroutepuzzle.feature.roommap.model.Room;
 import io.nigro.retroroutepuzzle.feature.route.contract.RouteEvent;
 import io.nigro.retroroutepuzzle.feature.search.model.RoomNode;
+import org.apache.commons.text.CaseUtils;
+import org.apache.commons.text.WordUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +44,7 @@ public abstract class RoomTreeSearch {
         if (itemsFound != null && !itemsFound.isEmpty()) {
             objectCollected = itemsFound.stream()
                     .map(Object::toString)
+                    .map(WordUtils::capitalize)
                     .collect(Collectors.joining(", "));
         }
 

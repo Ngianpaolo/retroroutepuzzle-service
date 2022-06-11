@@ -96,7 +96,7 @@ public class RoomBfsTreeSearch extends RoomTreeSearch {
                 .collect(Collectors.toSet());
 
         var itemsFound = itemsToCollect.stream()
-                .filter(roomNodeObjects::contains)
+                .filter(item -> roomNodeObjects.stream().anyMatch(item::equalsIgnoreCase))
                 .collect(Collectors.toSet());
 
         itemsToCollect.removeAll(itemsFound);
