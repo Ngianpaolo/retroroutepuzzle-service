@@ -1,4 +1,4 @@
-package io.nigro.retroroutepuzzle.feature.dfs.model;
+package io.nigro.retroroutepuzzle.feature.search.model;
 
 import io.nigro.retroroutepuzzle.feature.roommap.model.Item;
 import io.nigro.retroroutepuzzle.feature.roommap.model.Room;
@@ -39,6 +39,12 @@ public class RoomNode {
         this.adjacentRoomNodes = adjacentRoomNodeIds.stream()
                 .map(adjacentRoomNodeMaps::get)
                 .collect(Collectors.toSet());
+    }
+
+    public boolean branchHasRoomNodeNotVisited() {
+        return adjacentRoomNodes.stream()
+                .map(RoomNode::branchHasRoomNodeNotVisited)
+                .reduce(Boolean.FALSE, Boolean::logicalOr);
     }
 
     public static RoomNode from(Room room) {

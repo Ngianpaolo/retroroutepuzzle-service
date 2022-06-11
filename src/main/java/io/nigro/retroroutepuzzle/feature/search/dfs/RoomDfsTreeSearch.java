@@ -1,31 +1,27 @@
-package io.nigro.retroroutepuzzle.feature.dfs;
+package io.nigro.retroroutepuzzle.feature.search.dfs;
 
 import io.nigro.retroroutepuzzle.exception.RoomNotFoundException;
-import io.nigro.retroroutepuzzle.feature.dfs.model.RoomNode;
 import io.nigro.retroroutepuzzle.feature.roommap.model.Item;
 import io.nigro.retroroutepuzzle.feature.roommap.model.Room;
 import io.nigro.retroroutepuzzle.feature.route.contract.RouteEvent;
+import io.nigro.retroroutepuzzle.feature.search.RoomTreeSearch;
+import io.nigro.retroroutepuzzle.feature.search.model.RoomNode;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class RoomDFS {
-
-    private final List<Room> rooms;
+public class RoomDfsTreeSearch extends RoomTreeSearch {
 
     private Stack<RoomNode> roomNodeRouteStack;
 
-    private List<RouteEvent> routeEvent;
-
-    public RoomDFS(List<Room> rooms) {
-        this.rooms = rooms;
+    public RoomDfsTreeSearch(List<Room> rooms) {
+        super(rooms);
     }
 
     public List<RouteEvent> calculateRoomRoute(Long roomRootId, List<String> itemsToCollect) {
@@ -35,7 +31,7 @@ public class RoomDFS {
         Map<Long, RoomNode> roomNodeMap = getRoomNodeMap();
         RoomNode roomNodeRoot = roomNodeMap.get(roomRootId);
 
-        if(roomNodeRoot == null) {
+        if (roomNodeRoot == null) {
             throw new RoomNotFoundException();
         }
         calculateDFSRouteEvents(roomNodeRoot, itemsToCollect);
@@ -95,32 +91,6 @@ public class RoomDFS {
                 log.info("No other nodes to visit, these objects could not be found {}", itemsToCollect);
             }
         }
-    }
-
-    private void addRouteEvent(RoomNode visitedRoomNode, Set<String> itemsFound) {
-        String objectCollected = "None";
-        if (itemsFound != null && !itemsFound.isEmpty()) {
-            objectCollected = itemsFound.stream()
-                    .map(Object::toString)
-                    .collect(Collectors.joining(", "));
-        }
-
-        routeEvent.add(RouteEvent.builder()
-                .id(visitedRoomNode.getId())
-                .room(visitedRoomNode.getName())
-                .objectCollected(objectCollected)
-                .build());
-    }
-
-    private Map<Long, RoomNode> getRoomNodeMap() {
-        Map<Long, RoomNode> roomNodeMap = rooms.stream()
-                .map(RoomNode::from)
-                .collect(Collectors.toMap(RoomNode::getId, roomNode -> roomNode));
-
-        for (var roomId : roomNodeMap.keySet()) {
-            roomNodeMap.get(roomId).setAdjacentRoomNodes(roomNodeMap);
-        }
-        return roomNodeMap;
     }
 
 }
