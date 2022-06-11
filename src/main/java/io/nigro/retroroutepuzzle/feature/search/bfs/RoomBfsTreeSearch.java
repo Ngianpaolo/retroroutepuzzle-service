@@ -26,7 +26,7 @@ public class RoomBfsTreeSearch extends RoomTreeSearch {
 
     private Map<Integer, Set<RoomNode>> levelMap;
 
-    private RoomNode lastNodeVisited;
+    private RoomNode lastVisitedForwardRoomNode;
 
     private Map<Long, Boolean> roomsNodeHaveBranchVisited;
 
@@ -34,9 +34,8 @@ public class RoomBfsTreeSearch extends RoomTreeSearch {
         super(rooms);
     }
 
-    public List<RouteEvent> calculateRoomRoute(Long roomRootId, List<String> itemsToCollect) {
+    public RoomNode initializeRoomGraph(Long roomRootId) {
         roomNodeRouteStack = new Stack<>();
-        routeEvent = new ArrayList<>();
         levelMap = new HashMap<>();
 
         Map<Long, RoomNode> roomNodeMap = getRoomNodeMap();
@@ -50,11 +49,13 @@ public class RoomBfsTreeSearch extends RoomTreeSearch {
             throw new RoomNotFoundException();
         }
 
-        calculateBFSRouteEvents(roomNodeRoot, itemsToCollect);
-
-        return routeEvent;
+        return roomNodeRoot;
     }
 
+
+    public void calculateRoomRoute(RoomNode roomNode, List<String> itemsToCollect) {
+        calculateBFSRouteEvents(roomNode, itemsToCollect);
+    }
 
     private void calculateBFSRouteEvents(RoomNode visitedRoomNode, List<String> itemsToCollect) {
         // No objects to look for
@@ -62,7 +63,7 @@ public class RoomBfsTreeSearch extends RoomTreeSearch {
             return;
         }
         // If stack is empty means it's first recursion, so push rootNode in stack
-        // If last element of stack is not equals to current node means that DFS is going to the child nodes, so push new visited node in stack
+        // If last element of stack is not equals to current node means that BFS is going to the child nodes, so push new visited node in stack
         if (roomNodeRouteStack.isEmpty() || !roomNodeRouteStack.peek().equals(visitedRoomNode)) {
             roomNodeRouteStack.push(visitedRoomNode);
         }
@@ -120,7 +121,7 @@ public class RoomBfsTreeSearch extends RoomTreeSearch {
             if (siblingLinkedToVisit.isPresent()) {
                 calculateBFSRouteEvents(siblingLinkedToVisit.get(), itemsToCollect);
             } else {
-                lastNodeVisited = roomNodeRouteStack.pop();
+                lastVisitedForwardRoomNode = roomNodeRouteStack.pop();
                 calculateBFSRouteEvents(roomNodeRouteStack.peek(), itemsToCollect);
             }
             return;
@@ -142,16 +143,16 @@ public class RoomBfsTreeSearch extends RoomTreeSearch {
             if (childLinkedToVisit.isPresent()) {
                 calculateBFSRouteEvents(childLinkedToVisit.get(), itemsToCollect);
             } else if (roomsNodeHaveBranchVisited.get(visitedRoomNode.getId())) {
-                lastNodeVisited = roomNodeRouteStack.pop();
+                lastVisitedForwardRoomNode = roomNodeRouteStack.pop();
                 calculateBFSRouteEvents(roomNodeRouteStack.peek(), itemsToCollect);
             } else {
                 nextRoomNodeToVisit.stream()
                         // Avoid loop in cyclic graph
-                        .filter(roomNode -> !roomNode.equals(lastNodeVisited))
+                        .filter(roomNode -> !roomNode.equals(lastVisitedForwardRoomNode))
                         .findAny()
                         .ifPresentOrElse(roomNode -> calculateBFSRouteEvents(roomNode, itemsToCollect), () ->
                                 {
-                                    lastNodeVisited = roomNodeRouteStack.pop();
+                                    lastVisitedForwardRoomNode = roomNodeRouteStack.pop();
                                     calculateBFSRouteEvents(roomNodeRouteStack.peek(), itemsToCollect);
                                 }
                         );

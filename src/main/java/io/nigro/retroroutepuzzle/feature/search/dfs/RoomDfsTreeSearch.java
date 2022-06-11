@@ -3,7 +3,6 @@ package io.nigro.retroroutepuzzle.feature.search.dfs;
 import io.nigro.retroroutepuzzle.exception.RoomNotFoundException;
 import io.nigro.retroroutepuzzle.feature.roommap.model.Item;
 import io.nigro.retroroutepuzzle.feature.roommap.model.Room;
-import io.nigro.retroroutepuzzle.feature.route.contract.RouteEvent;
 import io.nigro.retroroutepuzzle.feature.search.RoomTreeSearch;
 import io.nigro.retroroutepuzzle.feature.search.model.RoomNode;
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +23,12 @@ public class RoomDfsTreeSearch extends RoomTreeSearch {
         super(rooms);
     }
 
-    public List<RouteEvent> calculateRoomRoute(Long roomRootId, List<String> itemsToCollect) {
+    public void calculateRoomRoute(RoomNode roomNode, List<String> itemsToCollect) {
+        calculateDFSRouteEvents(roomNode, itemsToCollect);
+    }
+
+    public RoomNode initializeRoomGraph(Long roomRootId) {
         roomNodeRouteStack = new Stack<>();
-        routeEvent = new ArrayList<>();
 
         Map<Long, RoomNode> roomNodeMap = getRoomNodeMap();
         RoomNode roomNodeRoot = roomNodeMap.get(roomRootId);
@@ -36,9 +38,7 @@ public class RoomDfsTreeSearch extends RoomTreeSearch {
         if (roomNodeRoot == null) {
             throw new RoomNotFoundException();
         }
-        calculateDFSRouteEvents(roomNodeRoot, itemsToCollect);
-
-        return routeEvent;
+        return roomNodeRoot;
     }
 
     private void calculateDFSRouteEvents(RoomNode visitedRoomNode, List<String> itemsToCollect) {

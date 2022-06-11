@@ -6,6 +6,7 @@ import io.nigro.retroroutepuzzle.feature.roommap.contract.RoomMapContract;
 import io.nigro.retroroutepuzzle.feature.roommap.model.Item;
 import io.nigro.retroroutepuzzle.feature.roommap.model.Room;
 import io.nigro.retroroutepuzzle.feature.route.contract.RouteEvent;
+import io.nigro.retroroutepuzzle.feature.search.RoomTreeSearch;
 import io.nigro.retroroutepuzzle.feature.search.bfs.RoomBfsTreeSearch;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,7 @@ public class RoomBfsTreeSearchTest {
     private final static String path = "./src/test/resources/";
 
     @Test
-    void calculateRoomRoute_should_be_work_withRoomMap1() {
+    void getRouteByRoomRootAndFindItems_should_be_work_withRoomMap1() {
         var roomMapContract = loadMapFromJsonFile("RoomMap1");
         var roomBFS = new RoomBfsTreeSearch(roomMapContract.getRooms());
 
@@ -34,7 +35,7 @@ public class RoomBfsTreeSearchTest {
         itemsToCollect.add("Knife");
         itemsToCollect.add("Potted Plant");
 
-        var result = roomBFS.calculateRoomRoute(rootRoomId, itemsToCollect);
+        var result = roomBFS.getRouteByRoomRootAndFindItems(rootRoomId, itemsToCollect);
 
         assertEquals(RouteEvent.builder().id(rootRoomId).room("Dining Room").objectCollected("None").build(), result.get(0));
         assertEquals(RouteEvent.builder().id(1L).room("Hallway").objectCollected("None").build(), result.get(1));
@@ -45,7 +46,7 @@ public class RoomBfsTreeSearchTest {
     }
 
     @Test
-    void calculateRoomRoute_should_be_work_withRoomMap2() {
+    void getRouteByRoomRootAndFindItems_should_be_work_withRoomMap2() {
         var roomMapContract = loadMapFromJsonFile("RoomMap2");
         var roomBFS = new RoomBfsTreeSearch(roomMapContract.getRooms());
 
@@ -55,7 +56,7 @@ public class RoomBfsTreeSearchTest {
         itemsToCollect.add("Potted Plant");
         itemsToCollect.add("Pillow");
 
-        var result = roomBFS.calculateRoomRoute(rootRoomId, itemsToCollect);
+        var result = roomBFS.getRouteByRoomRootAndFindItems(rootRoomId, itemsToCollect);
 
         assertEquals(RouteEvent.builder().id(rootRoomId).room("Sun Room").objectCollected("None").build(), result.get(0));
         assertEquals(RouteEvent.builder().id(2L).room("Dining Room").objectCollected("None").build(), result.get(1));
@@ -73,8 +74,8 @@ public class RoomBfsTreeSearchTest {
     }
 
     @Test
-    void calculateRoomRoute_should_throw_RoomNotFoundException() {
-        var roomDFS = new RoomBfsTreeSearch(List.of(
+    void getRouteByRoomRootAndFindItems_should_throw_RoomNotFoundException() {
+        RoomTreeSearch roomBDF = new RoomBfsTreeSearch(List.of(
                 Room.builder().id(1L).name("Sun Room").north(2L).build(),
                 Room.builder().id(2L).name("Living room").south(1L).build()
         ));
@@ -83,13 +84,13 @@ public class RoomBfsTreeSearchTest {
         var itemsToCollect = new ArrayList<String>();
         itemsToCollect.add("Knife");
 
-        assertThrows(RoomNotFoundException.class, () -> roomDFS.calculateRoomRoute(notExistingRootRoomId, itemsToCollect));
+        assertThrows(RoomNotFoundException.class, () -> roomBDF.getRouteByRoomRootAndFindItems(notExistingRootRoomId, itemsToCollect));
 
     }
 
     @Test
-    void calculateRoomRoute_should_be_tolerant_with_not_existing_item() {
-        var roomDFS = new RoomBfsTreeSearch(List.of(
+    void getRouteByRoomRootAndFindItems_should_be_tolerant_with_not_existing_item() {
+        RoomTreeSearch roomBDF = new RoomBfsTreeSearch(List.of(
                 Room.builder().id(1L).name("Room1").south(2L).east(4L).build(),
                 Room.builder().id(2L).name("Room2").north(1L).east(3L).build(),
                 Room.builder().id(3L).name("Room3").north(4L).west(2L).build(),
@@ -100,7 +101,7 @@ public class RoomBfsTreeSearchTest {
         var itemsToCollect = new ArrayList<String>();
         itemsToCollect.add("NotExistingItem");
 
-        var result = roomDFS.calculateRoomRoute(rootRoomId, itemsToCollect);
+        var result = roomBDF.getRouteByRoomRootAndFindItems(rootRoomId, itemsToCollect);
 
         assertEquals(RouteEvent.builder().id(rootRoomId).room("Room1").objectCollected("None").build(), result.get(0));
         assertEquals(RouteEvent.builder().id(4L).room("Room4").objectCollected("None").build(), result.get(1));
@@ -111,8 +112,8 @@ public class RoomBfsTreeSearchTest {
     }
 
     @Test
-    void calculateRoomRoute_should_be_tolerant_with_cyclic_graphs_test1() {
-        var roomDFS = new RoomBfsTreeSearch(List.of(
+    void getRouteByRoomRootAndFindItems_should_be_tolerant_with_cyclic_graphs_test1() {
+        RoomTreeSearch roomBDF = new RoomBfsTreeSearch(List.of(
                 Room.builder().id(1L).name("Room1").south(2L).east(4L).build(),
                 Room.builder().id(2L).name("Room2").north(1L).east(3L).build(),
                 Room.builder().id(3L).name("Room3").north(4L).west(2L).build(),
@@ -123,15 +124,15 @@ public class RoomBfsTreeSearchTest {
         var itemsToCollect = new ArrayList<String>();
         itemsToCollect.add("Item1");
 
-        var result = roomDFS.calculateRoomRoute(rootRoomId, itemsToCollect);
+        var result = roomBDF.getRouteByRoomRootAndFindItems(rootRoomId, itemsToCollect);
 
         assertEquals(RouteEvent.builder().id(rootRoomId).room("Room1").objectCollected("None").build(), result.get(0));
         assertEquals(RouteEvent.builder().id(4L).room("Room4").objectCollected("Item1").build(), result.get(1));
     }
 
     @Test
-    void calculateRoomRoute_should_be_tolerant_with_cyclic_graphs_test2() {
-        var roomDFS = new RoomBfsTreeSearch(List.of(
+    void getRouteByRoomRootAndFindItems_should_be_tolerant_with_cyclic_graphs_test2() {
+        RoomTreeSearch roomBDF = new RoomBfsTreeSearch(List.of(
                 Room.builder().id(1L).name("Room1").south(2L).east(4L).build(),
                 Room.builder().id(2L).name("Room2").north(1L).east(3L).objects(List.of(Item.builder().name("Item1").build())).build(),
                 Room.builder().id(3L).name("Room3").north(4L).west(2L).build(),
@@ -142,7 +143,7 @@ public class RoomBfsTreeSearchTest {
         var itemsToCollect = new ArrayList<String>();
         itemsToCollect.add("Item1");
 
-        var result = roomDFS.calculateRoomRoute(rootRoomId, itemsToCollect);
+        var result = roomBDF.getRouteByRoomRootAndFindItems(rootRoomId, itemsToCollect);
 
         assertEquals(RouteEvent.builder().id(rootRoomId).room("Room1").objectCollected("None").build(), result.get(0));
         assertEquals(RouteEvent.builder().id(4L).room("Room4").objectCollected("None").build(), result.get(1));
@@ -152,8 +153,8 @@ public class RoomBfsTreeSearchTest {
     }
 
     @Test
-    void calculateRoomRoute_should_be_tolerant_with_cyclic_graphs_test3() {
-        var roomDFS = new RoomBfsTreeSearch(List.of(
+    void getRouteByRoomRootAndFindItems_should_be_tolerant_with_cyclic_graphs_test3() {
+        RoomTreeSearch roomBDF = new RoomBfsTreeSearch(List.of(
                 Room.builder().id(1L).name("Room1").south(8L).east(7L).west(2L).build(),
                 Room.builder().id(2L).name("Room2").south(3L).east(1L).build(),
                 Room.builder().id(3L).name("Room3").south(4L).west(2L).build(),
@@ -170,7 +171,7 @@ public class RoomBfsTreeSearchTest {
         itemsToCollect.add("Item2");
         itemsToCollect.add("Item3");
 
-        var result = roomDFS.calculateRoomRoute(rootRoomId, itemsToCollect);
+        var result = roomBDF.getRouteByRoomRootAndFindItems(rootRoomId, itemsToCollect);
 
         assertEquals(RouteEvent.builder().id(rootRoomId).room("Room1").objectCollected("None").build(), result.get(0));
         assertEquals(RouteEvent.builder().id(8L).room("Room8").objectCollected("Item3").build(), result.get(1));

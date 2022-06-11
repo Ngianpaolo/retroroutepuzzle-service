@@ -4,6 +4,7 @@ import io.nigro.retroroutepuzzle.feature.roommap.model.Room;
 import io.nigro.retroroutepuzzle.feature.route.contract.RouteEvent;
 import io.nigro.retroroutepuzzle.feature.search.model.RoomNode;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,7 +22,20 @@ public abstract class RoomTreeSearch {
         this.rooms = rooms;
     }
 
-    abstract public List<RouteEvent> calculateRoomRoute(Long roomRootId, List<String> itemsToCollect);
+    public List<RouteEvent> getRouteByRoomRootAndFindItems(Long roomRootId, List<String> itemsToCollect) {
+        initializeDataStructure();
+        var roomNodeRoot = initializeRoomGraph(roomRootId);
+        calculateRoomRoute(roomNodeRoot, itemsToCollect);
+        return routeEvent;
+    }
+
+    protected void initializeDataStructure() {
+        routeEvent = new ArrayList<>();
+    }
+
+    abstract protected RoomNode initializeRoomGraph(Long roomRootId);
+
+    abstract protected void calculateRoomRoute(RoomNode roomNode, List<String> itemsToCollect);
 
     protected void addRouteEvent(RoomNode visitedRoomNode, Set<String> itemsFound) {
         String objectCollected = "None";
@@ -49,7 +63,7 @@ public abstract class RoomTreeSearch {
         return roomNodeMap;
     }
 
-    protected boolean allRoomsAreVisited(){
+    protected boolean allRoomsAreVisited() {
         return !visitedRooms.isEmpty() && visitedRooms.values().stream().allMatch(x -> x);
     }
 
