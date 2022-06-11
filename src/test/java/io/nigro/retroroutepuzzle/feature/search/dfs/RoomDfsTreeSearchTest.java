@@ -36,9 +36,9 @@ public class RoomDfsTreeSearchTest {
         var result = roomDFS.calculateRoomRoute(rootRoomId, itemsToCollect);
 
         assertEquals(RouteEvent.builder().id(rootRoomId).room("Dining Room").objectCollected("None").build(), result.get(0));
-        assertEquals(RouteEvent.builder().id(4L).room("Sun Room").objectCollected("Potted Plant").build(), result.get(1));
+        assertEquals(RouteEvent.builder().id(1L).room("Hallway").objectCollected("None").build(), result.get(1));
         assertEquals(RouteEvent.builder().id(rootRoomId).room("Dining Room").objectCollected("None").build(), result.get(2));
-        assertEquals(RouteEvent.builder().id(1L).room("Hallway").objectCollected("None").build(), result.get(3));
+        assertEquals(RouteEvent.builder().id(4L).room("Sun Room").objectCollected("Potted Plant").build(), result.get(3));
         assertEquals(RouteEvent.builder().id(rootRoomId).room("Dining Room").objectCollected("None").build(), result.get(4));
         assertEquals(RouteEvent.builder().id(3L).room("Kitchen").objectCollected("Knife").build(), result.get(5));
     }
@@ -57,12 +57,14 @@ public class RoomDfsTreeSearchTest {
         var result = roomDFS.calculateRoomRoute(rootRoomId, itemsToCollect);
 
         assertEquals(RouteEvent.builder().id(rootRoomId).room("Sun Room").objectCollected("None").build(), result.get(0));
-        assertEquals(RouteEvent.builder().id(7L).room("Living room").objectCollected("Potted Plant").build(), result.get(1));
+        assertEquals(RouteEvent.builder().id(2L).room("Dining Room").objectCollected("None").build(), result.get(1));
         assertEquals(RouteEvent.builder().id(1L).room("Hallway").objectCollected("None").build(), result.get(2));
-        assertEquals(RouteEvent.builder().id(2L).room("Dining Room").objectCollected("None").build(), result.get(3));
-        assertEquals(RouteEvent.builder().id(3L).room("Kitchen").objectCollected("Knife").build(), result.get(4));
+        assertEquals(RouteEvent.builder().id(7L).room("Living room").objectCollected("Potted Plant").build(), result.get(3));
+        assertEquals(RouteEvent.builder().id(1L).room("Hallway").objectCollected("None").build(), result.get(4));
         assertEquals(RouteEvent.builder().id(2L).room("Dining Room").objectCollected("None").build(), result.get(5));
-        assertEquals(RouteEvent.builder().id(5L).room("Bedroom").objectCollected("Pillow").build(), result.get(6));
+        assertEquals(RouteEvent.builder().id(3L).room("Kitchen").objectCollected("Knife").build(), result.get(6));
+        assertEquals(RouteEvent.builder().id(2L).room("Dining Room").objectCollected("None").build(), result.get(7));
+        assertEquals(RouteEvent.builder().id(5L).room("Bedroom").objectCollected("Pillow").build(), result.get(8));
     }
 
     @Test
@@ -77,6 +79,28 @@ public class RoomDfsTreeSearchTest {
         itemsToCollect.add("Knife");
 
         assertThrows(RoomNotFoundException.class, () -> roomDFS.calculateRoomRoute(notExistingRootRoomId, itemsToCollect));
+
+    }
+
+    @Test
+    void calculateRoomRoute_should_be_tolerant_with_not_existing_item() {
+        var roomDFS = new RoomDfsTreeSearch(List.of(
+                Room.builder().id(1L).name("Room1").south(2L).east(4L).build(),
+                Room.builder().id(2L).name("Room2").north(1L).east(3L).build(),
+                Room.builder().id(3L).name("Room3").north(4L).west(2L).build(),
+                Room.builder().id(4L).name("Room4").south(3L).west(1L).objects(List.of(Item.builder().name("Item1").build())).build()
+        ));
+
+        var rootRoomId = 1L;
+        var itemsToCollect = new ArrayList<String>();
+        itemsToCollect.add("NotExistingItem");
+
+        var result = roomDFS.calculateRoomRoute(rootRoomId, itemsToCollect);
+
+        assertEquals(RouteEvent.builder().id(rootRoomId).room("Room1").objectCollected("None").build(), result.get(0));
+        assertEquals(RouteEvent.builder().id(4L).room("Room4").objectCollected("None").build(), result.get(1));
+        assertEquals(RouteEvent.builder().id(3L).room("Room3").objectCollected("None").build(), result.get(2));
+        assertEquals(RouteEvent.builder().id(2L).room("Room2").objectCollected("None").build(), result.get(3));
 
     }
 
@@ -96,14 +120,34 @@ public class RoomDfsTreeSearchTest {
         var result = roomDFS.calculateRoomRoute(rootRoomId, itemsToCollect);
 
         assertEquals(RouteEvent.builder().id(rootRoomId).room("Room1").objectCollected("None").build(), result.get(0));
-        assertEquals(RouteEvent.builder().id(2L).room("Room2").objectCollected("None").build(), result.get(1));
-        assertEquals(RouteEvent.builder().id(3L).room("Room3").objectCollected("None").build(), result.get(2));
-        assertEquals(RouteEvent.builder().id(4L).room("Room4").objectCollected("Item1").build(), result.get(3));
+        assertEquals(RouteEvent.builder().id(4L).room("Room4").objectCollected("Item1").build(), result.get(1));
 
     }
 
     @Test
     void calculateRoomRoute_should_be_tolerant_with_cyclic_graphs_test2() {
+        var roomDFS = new RoomDfsTreeSearch(List.of(
+                Room.builder().id(1L).name("Room1").south(2L).east(4L).build(),
+                Room.builder().id(2L).name("Room2").north(1L).east(3L).objects(List.of(Item.builder().name("Item1").build())).build(),
+                Room.builder().id(3L).name("Room3").north(4L).west(2L).build(),
+                Room.builder().id(4L).name("Room4").south(3L).west(1L).build()
+        ));
+
+        var rootRoomId = 1L;
+        var itemsToCollect = new ArrayList<String>();
+        itemsToCollect.add("Item1");
+
+        var result = roomDFS.calculateRoomRoute(rootRoomId, itemsToCollect);
+
+        assertEquals(RouteEvent.builder().id(rootRoomId).room("Room1").objectCollected("None").build(), result.get(0));
+        assertEquals(RouteEvent.builder().id(4L).room("Room4").objectCollected("None").build(), result.get(1));
+        assertEquals(RouteEvent.builder().id(3L).room("Room3").objectCollected("None").build(), result.get(2));
+        assertEquals(RouteEvent.builder().id(2L).room("Room2").objectCollected("Item1").build(), result.get(3));
+
+    }
+
+    @Test
+    void calculateRoomRoute_should_be_tolerant_with_cyclic_graphs_test3() {
         var roomDFS = new RoomDfsTreeSearch(List.of(
                 Room.builder().id(1L).name("Room1").south(8L).east(7L).west(2L).build(),
                 Room.builder().id(2L).name("Room2").south(3L).east(1L).build(),
@@ -124,20 +168,14 @@ public class RoomDfsTreeSearchTest {
         var result = roomDFS.calculateRoomRoute(rootRoomId, itemsToCollect);
 
         assertEquals(RouteEvent.builder().id(rootRoomId).room("Room1").objectCollected("None").build(), result.get(0));
-        assertEquals(RouteEvent.builder().id(2L).room("Room2").objectCollected("None").build(), result.get(1));
-        assertEquals(RouteEvent.builder().id(3L).room("Room3").objectCollected("None").build(), result.get(2));
-        assertEquals(RouteEvent.builder().id(4L).room("Room4").objectCollected("Item1").build(), result.get(3));
-        assertEquals(RouteEvent.builder().id(5L).room("Room5").objectCollected("None").build(), result.get(4));
-        assertEquals(RouteEvent.builder().id(6L).room("Room6").objectCollected("None").build(), result.get(5));
-        assertEquals(RouteEvent.builder().id(7L).room("Room7").objectCollected("Item2").build(), result.get(6));
+        assertEquals(RouteEvent.builder().id(8L).room("Room8").objectCollected("Item3").build(), result.get(1));
+        assertEquals(RouteEvent.builder().id(rootRoomId).room("Room1").objectCollected("None").build(), result.get(2));
+        assertEquals(RouteEvent.builder().id(2L).room("Room2").objectCollected("None").build(), result.get(3));
+        assertEquals(RouteEvent.builder().id(3L).room("Room3").objectCollected("None").build(), result.get(4));
+        assertEquals(RouteEvent.builder().id(4L).room("Room4").objectCollected("Item1").build(), result.get(5));
+        assertEquals(RouteEvent.builder().id(5L).room("Room5").objectCollected("None").build(), result.get(6));
         assertEquals(RouteEvent.builder().id(6L).room("Room6").objectCollected("None").build(), result.get(7));
-        assertEquals(RouteEvent.builder().id(5L).room("Room5").objectCollected("None").build(), result.get(8));
-        assertEquals(RouteEvent.builder().id(4L).room("Room4").objectCollected("None").build(), result.get(9));
-        assertEquals(RouteEvent.builder().id(3L).room("Room3").objectCollected("None").build(), result.get(10));
-        assertEquals(RouteEvent.builder().id(2L).room("Room2").objectCollected("None").build(), result.get(11));
-        assertEquals(RouteEvent.builder().id(rootRoomId).room("Room1").objectCollected("None").build(), result.get(12));
-        assertEquals(RouteEvent.builder().id(8L).room("Room8").objectCollected("Item3").build(), result.get(13));
-
+        assertEquals(RouteEvent.builder().id(7L).room("Room7").objectCollected("Item2").build(), result.get(8));
 
     }
 

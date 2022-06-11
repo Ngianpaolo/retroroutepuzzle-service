@@ -8,9 +8,8 @@ import io.nigro.retroroutepuzzle.feature.search.RoomTreeSearch;
 import io.nigro.retroroutepuzzle.feature.search.model.RoomNode;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -25,9 +24,11 @@ public class RoomBfsTreeSearch extends RoomTreeSearch {
 
     private Stack<RoomNode> roomNodeRouteStack;
 
-    private Deque<RoomNode> roomToVisitDeque;
-
     private Map<Integer, Set<RoomNode>> levelMap;
+
+    private RoomNode lastNodeVisited;
+
+    private Map<Long, Boolean> roomsNodeHaveBranchVisited;
 
     public RoomBfsTreeSearch(List<Room> rooms) {
         super(rooms);
@@ -36,17 +37,18 @@ public class RoomBfsTreeSearch extends RoomTreeSearch {
     public List<RouteEvent> calculateRoomRoute(Long roomRootId, List<String> itemsToCollect) {
         roomNodeRouteStack = new Stack<>();
         routeEvent = new ArrayList<>();
-        roomToVisitDeque = new ArrayDeque<>();
         levelMap = new HashMap<>();
 
         Map<Long, RoomNode> roomNodeMap = getRoomNodeMap();
         RoomNode roomNodeRoot = roomNodeMap.get(roomRootId);
+        visitedRooms = roomNodeMap.keySet().stream()
+                .collect(Collectors.toMap(k -> k, v -> false));
+        roomsNodeHaveBranchVisited = roomNodeMap.keySet().stream()
+                .collect(Collectors.toMap(k -> k, v -> false));
 
         if (roomNodeRoot == null) {
             throw new RoomNotFoundException();
         }
-
-        roomToVisitDeque.addFirst(roomNodeRoot);
 
         calculateBFSRouteEvents(roomNodeRoot, itemsToCollect);
 
@@ -56,7 +58,7 @@ public class RoomBfsTreeSearch extends RoomTreeSearch {
 
     private void calculateBFSRouteEvents(RoomNode visitedRoomNode, List<String> itemsToCollect) {
         // No objects to look for
-        if (itemsToCollect.isEmpty()) {
+        if (itemsToCollect.isEmpty() || allRoomsAreVisited()) {
             return;
         }
         // If stack is empty means it's first recursion, so push rootNode in stack
@@ -65,29 +67,26 @@ public class RoomBfsTreeSearch extends RoomTreeSearch {
             roomNodeRouteStack.push(visitedRoomNode);
         }
 
-        roomToVisitDeque.remove(visitedRoomNode);
-
+        //roomToVisitDeque.remove(visitedRoomNode);
         var actualLevelSet = levelMap.getOrDefault(roomNodeRouteStack.size(), new HashSet<>());
         actualLevelSet.add(visitedRoomNode);
         levelMap.put(roomNodeRouteStack.size(), actualLevelSet);
 
         // Find adjacent room not yet visited
         Set<RoomNode> prevLevel = levelMap.getOrDefault(roomNodeRouteStack.size() - 1, new HashSet<>());
-        List<RoomNode> nextRoomNodeToVisit = visitedRoomNode.getAdjacentRoomNodes()
+        Set<RoomNode> nextRoomNodeToVisit = visitedRoomNode.getAdjacentRoomNodes()
                 .stream()
-                .filter(roomNode -> !roomNode.isVisited() && !prevLevel.contains(roomNode))
-                .collect(Collectors.toList());
+                .filter(roomNode -> !roomsNodeHaveBranchVisited.get(roomNode.getId()) && !prevLevel.contains(roomNode))
+                .collect(Collectors.toSet());
 
         var nextLevelSet = levelMap.getOrDefault(roomNodeRouteStack.size() + 1, new HashSet<>());
         nextLevelSet.addAll(nextRoomNodeToVisit);
         levelMap.put(roomNodeRouteStack.size() + 1, nextLevelSet);
 
+        visitedRooms.put(visitedRoomNode.getId(), true);
+        // Set the flag only if it has no other adjacent rooms to visit
         if (nextRoomNodeToVisit.isEmpty())
-            visitedRoomNode.setVisited(true);
-
-        var newRoomNodeToPutInQueue = new ArrayList<>(nextRoomNodeToVisit);
-        newRoomNodeToPutInQueue.removeAll(roomToVisitDeque);
-        roomToVisitDeque.addAll(newRoomNodeToPutInQueue);
+            roomsNodeHaveBranchVisited.put(visitedRoomNode.getId(), true);
 
         var roomNodeObjects = Optional.ofNullable(visitedRoomNode.getObjects())
                 .orElse(List.of())
@@ -108,26 +107,61 @@ public class RoomBfsTreeSearch extends RoomTreeSearch {
             return;
         }
 
-        if (!roomToVisitDeque.isEmpty() && nextRoomNodeToVisit.contains(roomToVisitDeque.peekFirst())) {
-            calculateBFSRouteEvents(roomToVisitDeque.peekFirst(), itemsToCollect);
-        } else {
-            // No new room to visit, so go back
+        var siblingsNotVisited = levelMap.get(roomNodeRouteStack.size()).stream()
+                .filter(roomNode -> !visitedRooms.get(roomNode.getId()))
+                .collect(Collectors.toSet());
 
-            if (!roomToVisitDeque.isEmpty()) {
-                if (roomNodeRouteStack.size() > 1) {
-                    roomNodeRouteStack.pop();
-                    calculateBFSRouteEvents(roomNodeRouteStack.peek(), itemsToCollect);
-                } else {
-                    if (!nextRoomNodeToVisit.isEmpty())
-                        calculateBFSRouteEvents(nextRoomNodeToVisit.get(0), itemsToCollect);
-                }
+        var siblingsLinkedToVisit = siblingsNotVisited.stream()
+                .filter(nextRoomNodeToVisit::contains)
+                .collect(Collectors.toSet());
+
+        if (!siblingsNotVisited.isEmpty()) {
+            var siblingLinkedToVisit = siblingsLinkedToVisit.stream().findAny();
+            if (siblingLinkedToVisit.isPresent()) {
+                calculateBFSRouteEvents(siblingLinkedToVisit.get(), itemsToCollect);
             } else {
-                // If the roomNodeRouteStack is empty and all adjacent rooms are yet visited
-                // then it means that there are no other rooms to look for
-                // then the search is finished
-                log.info("No other nodes to visit, these objects could not be found {}", itemsToCollect);
+                lastNodeVisited = roomNodeRouteStack.pop();
+                calculateBFSRouteEvents(roomNodeRouteStack.peek(), itemsToCollect);
             }
+            return;
         }
+
+        var childrenNotVisited = levelMap.keySet().stream()
+                .filter(level -> level > roomNodeRouteStack.size())
+                .map(level -> levelMap.get(level))
+                .flatMap(Collection::stream)
+                .filter(roomNode -> !visitedRooms.get(roomNode.getId()))
+                .collect(Collectors.toSet());
+
+        var childrenLinkedToVisit = childrenNotVisited.stream()
+                .filter(nextRoomNodeToVisit::contains)
+                .collect(Collectors.toSet());
+
+        if (!childrenNotVisited.isEmpty()) {
+            var childLinkedToVisit = childrenLinkedToVisit.stream().findAny();
+            if (childLinkedToVisit.isPresent()) {
+                calculateBFSRouteEvents(childLinkedToVisit.get(), itemsToCollect);
+            } else if (roomsNodeHaveBranchVisited.get(visitedRoomNode.getId())) {
+                lastNodeVisited = roomNodeRouteStack.pop();
+                calculateBFSRouteEvents(roomNodeRouteStack.peek(), itemsToCollect);
+            } else {
+                nextRoomNodeToVisit.stream()
+                        // Avoid loop in cyclic graph
+                        .filter(roomNode -> !roomNode.equals(lastNodeVisited))
+                        .findAny()
+                        .ifPresentOrElse(roomNode -> calculateBFSRouteEvents(roomNode, itemsToCollect), () ->
+                                {
+                                    lastNodeVisited = roomNodeRouteStack.pop();
+                                    calculateBFSRouteEvents(roomNodeRouteStack.peek(), itemsToCollect);
+                                }
+                        );
+            }
+            return;
+        }
+        // If the roomNodeRouteStack is empty and all adjacent rooms are yet visited
+        // then it means that there are no other rooms to look for
+        // then the search is finished
+        log.info("No other nodes to visit, these objects could not be found {}", itemsToCollect);
     }
 
 }

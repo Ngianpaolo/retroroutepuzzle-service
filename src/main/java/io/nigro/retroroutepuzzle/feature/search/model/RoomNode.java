@@ -33,8 +33,6 @@ public class RoomNode {
     @EqualsAndHashCode.Exclude
     private Set<RoomNode> adjacentRoomNodes;
 
-    private boolean visited;
-
     public void setAdjacentRoomNodes(Map<Long, RoomNode> adjacentRoomNodeMaps) {
         this.adjacentRoomNodes = adjacentRoomNodeIds.stream()
                 .map(adjacentRoomNodeMaps::get)

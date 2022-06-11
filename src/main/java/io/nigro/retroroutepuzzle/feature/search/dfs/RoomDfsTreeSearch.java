@@ -30,6 +30,8 @@ public class RoomDfsTreeSearch extends RoomTreeSearch {
 
         Map<Long, RoomNode> roomNodeMap = getRoomNodeMap();
         RoomNode roomNodeRoot = roomNodeMap.get(roomRootId);
+        visitedRooms = roomNodeMap.keySet().stream()
+                .collect(Collectors.toMap(k -> k, v -> false));
 
         if (roomNodeRoot == null) {
             throw new RoomNotFoundException();
@@ -41,7 +43,7 @@ public class RoomDfsTreeSearch extends RoomTreeSearch {
 
     private void calculateDFSRouteEvents(RoomNode visitedRoomNode, List<String> itemsToCollect) {
         // No objects to look for
-        if (itemsToCollect.isEmpty()) {
+        if (itemsToCollect.isEmpty() || allRoomsAreVisited()) {
             return;
         }
         // If stack is empty means it's first recursion, so push rootNode in stack
@@ -50,7 +52,7 @@ public class RoomDfsTreeSearch extends RoomTreeSearch {
             roomNodeRouteStack.push(visitedRoomNode);
         }
 
-        visitedRoomNode.setVisited(true);
+        visitedRooms.put(visitedRoomNode.getId(), true);
 
         var roomNodeObjects = Optional.ofNullable(visitedRoomNode.getObjects())
                 .orElse(List.of())
@@ -74,7 +76,7 @@ public class RoomDfsTreeSearch extends RoomTreeSearch {
         // Find adjacent room not yet visited
         Optional<RoomNode> nextRoomNodeToVisit = visitedRoomNode.getAdjacentRoomNodes()
                 .stream()
-                .filter(roomNode -> !roomNode.isVisited())
+                .filter(roomNode -> !visitedRooms.get(roomNode.getId()))
                 .findAny();
 
         if (nextRoomNodeToVisit.isPresent()) {

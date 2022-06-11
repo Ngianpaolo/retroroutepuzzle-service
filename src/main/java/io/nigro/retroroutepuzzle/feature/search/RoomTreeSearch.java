@@ -15,6 +15,8 @@ public abstract class RoomTreeSearch {
 
     protected List<RouteEvent> routeEvent;
 
+    protected Map<Long, Boolean> visitedRooms;
+
     protected RoomTreeSearch(List<Room> rooms) {
         this.rooms = rooms;
     }
@@ -45,6 +47,10 @@ public abstract class RoomTreeSearch {
             roomNodeMap.get(roomId).setAdjacentRoomNodes(roomNodeMap);
         }
         return roomNodeMap;
+    }
+
+    protected boolean allRoomsAreVisited(){
+        return !visitedRooms.isEmpty() && visitedRooms.values().stream().allMatch(x -> x);
     }
 
 }
