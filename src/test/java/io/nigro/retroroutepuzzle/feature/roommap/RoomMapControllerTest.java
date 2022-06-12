@@ -1,8 +1,6 @@
 package io.nigro.retroroutepuzzle.feature.roommap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.nigro.retroroutepuzzle.feature.roommap.contract.RoomMapContract;
-import io.nigro.retroroutepuzzle.feature.roommap.model.Room;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static io.nigro.retroroutepuzzle.fixtures.RoomMapContractFixtures.getRoomMapContract;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -40,13 +39,7 @@ class RoomMapControllerTest {
     void createRoomMap_shouldWork() throws Exception {
         var id = "roomMap1";
 
-        var roomMapContract = RoomMapContract.builder()
-                .id(id)
-                .rooms(List.of(
-                        Room.builder().id(1L).name("Sun Room").north(2L).build(),
-                        Room.builder().id(2L).name("Living room").south(1L).build()
-                ))
-                .build();
+        var roomMapContract = getRoomMapContract(id);
 
         when(roomMapService.createRoomMap(roomMapContract)).thenReturn(roomMapContract);
         mockMvc.perform(post("/api/room-map")
@@ -62,13 +55,7 @@ class RoomMapControllerTest {
     void getRoomMap_shouldWork() throws Exception {
         var id = "roomMap1";
 
-        var roomMapContract = RoomMapContract.builder()
-                .id(id)
-                .rooms(List.of(
-                        Room.builder().id(1L).name("Sun Room").north(2L).build(),
-                        Room.builder().id(2L).name("Living room").south(1L).build()
-                ))
-                .build();
+        var roomMapContract = getRoomMapContract(id);
 
         when(roomMapService.getRoomMap(id)).thenReturn(roomMapContract);
         mockMvc.perform(get("/api/room-map/" + id)
@@ -85,21 +72,13 @@ class RoomMapControllerTest {
         var id = "roomMap1";
         var id2 = "roomMap2";
 
-        var roomMapContract = RoomMapContract.builder()
-                .id(id)
-                .rooms(List.of(
-                        Room.builder().id(1L).name("Room1").north(2L).build(),
-                        Room.builder().id(2L).name("Room2").south(1L).build()
-                ))
-                .build();
+        var roomMapContract = getRoomMapContract(id);
+        var roomMapContract2 = getRoomMapContract(id2);
+        roomMapContract.getRooms().get(0).setName("Room1");
+        roomMapContract.getRooms().get(1).setName("Room2");
+        roomMapContract2.getRooms().get(0).setName("Room3");
+        roomMapContract2.getRooms().get(1).setName("Room4");
 
-        var roomMapContract2 = RoomMapContract.builder()
-                .id(id2)
-                .rooms(List.of(
-                        Room.builder().id(1L).name("Room3").north(2L).build(),
-                        Room.builder().id(2L).name("Room4").south(1L).build()
-                ))
-                .build();
 
         when(roomMapService.getAllRoomMaps()).thenReturn(List.of(roomMapContract, roomMapContract2));
         mockMvc.perform(get("/api/room-map")
