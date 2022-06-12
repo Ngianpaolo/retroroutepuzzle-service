@@ -25,7 +25,7 @@ public class RouteService {
         this.routeSearchService = routeSearchService;
     }
 
-    public List<RouteEvent> calculateRoute(RouteRequest request, RoomTreeSearchType searchType) {
+    public List<RouteEvent> searchRoute(RouteRequest request, RoomTreeSearchType searchType) {
         return routeSearchService.getRouteByRoomRootAndItemsToFind(
                 request.getRooms(),
                 request.getStartRoomId(),
@@ -33,7 +33,7 @@ public class RouteService {
                 searchType);
     }
 
-    public List<RouteEvent> calculateRoute(RouteMapSavedRequest request, RoomTreeSearchType searchType, String roomMapId) {
+    public List<RouteEvent> searchRoute(RouteMapSavedRequest request, RoomTreeSearchType searchType, String roomMapId) {
         return routeSearchService.getRouteByRoomRootAndItemsToFind(
                 roomMapRepository.findRoomMapById(roomMapId).orElseThrow(RoomMapNotFoundException::new).getRooms(),
                 request.getStartRoomId(),

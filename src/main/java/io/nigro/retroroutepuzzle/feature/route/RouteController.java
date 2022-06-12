@@ -35,11 +35,11 @@ public class RouteController {
     }
 
     @PostMapping("/api/route/search/{searchType}")
-    public ResponseEntity<Resource> calculateRoute(@PathVariable(name = "searchType") RoomTreeSearchType searchType,
+    public ResponseEntity<Resource> searchRoute(@PathVariable(name = "searchType") RoomTreeSearchType searchType,
                                                    @Valid @RequestBody RouteRequest request) {
         String filename = getFilename(request, searchType);
 
-        var routeEvents = routeService.calculateRoute(request, searchType);
+        var routeEvents = routeService.searchRoute(request, searchType);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename + ".txt")
@@ -48,12 +48,12 @@ public class RouteController {
     }
 
     @PostMapping("/api/route/search/{searchType}/rooms/{roomMapId}")
-    public ResponseEntity<Resource> calculateRoute(@PathVariable(name = "searchType") RoomTreeSearchType searchType,
+    public ResponseEntity<Resource> searchRoute(@PathVariable(name = "searchType") RoomTreeSearchType searchType,
                                                    @PathVariable(name = "roomMapId") String roomMapId,
                                                    @Valid @RequestBody RouteMapSavedRequest request) {
         String filename = getFilename(request, searchType);
 
-        var routeEvents = routeService.calculateRoute(request, searchType, roomMapId);
+        var routeEvents = routeService.searchRoute(request, searchType, roomMapId);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename + ".txt")

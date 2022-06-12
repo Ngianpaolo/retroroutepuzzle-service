@@ -1,0 +1,16 @@
+ -------------------------------------------------------------------- 
+ ID     	 Room               	 Object  collected         
+ -------------------------------------------------------------------- 
+ 2       	 Dining  Room       	 None                                 
+ 1       	 Hallway               	 None                                 
+ 2       	 Dining  Room       	 None                                 
+ 4       	 Sun  Room             	 None                                 
+ 2       	 Dining  Room       	 None                                 
+ 3       	 Kitchen               	 Knife                               
+ 2       	 Dining  Room       	 None                                 
+ 5       	 Bedroom               	 None                                 
+ 6       	 Bathroom             	 None                                 
+ 5       	 Bedroom               	 None                                 
+ 2       	 Dining  Room       	 None                                 
+ 1       	 Hallway               	 None                                 
+ 7       	 Living  room       	 Potted  Plant                 
