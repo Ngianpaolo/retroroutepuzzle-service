@@ -3,7 +3,7 @@ package io.nigro.retroroutepuzzle.feature.route;
 import io.nigro.retroroutepuzzle.exception.RoomMapNotFoundException;
 import io.nigro.retroroutepuzzle.feature.roommap.RoomMapRepository;
 import io.nigro.retroroutepuzzle.feature.route.model.RouteEvent;
-import io.nigro.retroroutepuzzle.feature.route.contract.RouteMapSavedRequest;
+import io.nigro.retroroutepuzzle.feature.route.contract.RouteSavedMapRequest;
 import io.nigro.retroroutepuzzle.feature.route.contract.RouteRequest;
 import io.nigro.retroroutepuzzle.feature.search.RoomTreeSearchType;
 import io.nigro.retroroutepuzzle.feature.search.RouteSearchService;
@@ -33,7 +33,7 @@ public class RouteService {
                 searchType);
     }
 
-    public List<RouteEvent> searchRoute(RouteMapSavedRequest request, RoomTreeSearchType searchType, String roomMapId) {
+    public List<RouteEvent> searchRoute(RouteSavedMapRequest request, RoomTreeSearchType searchType, String roomMapId) {
         return routeSearchService.getRouteByRoomRootAndItemsToFind(
                 roomMapRepository.findRoomMapById(roomMapId).orElseThrow(RoomMapNotFoundException::new).getRooms(),
                 request.getStartRoomId(),

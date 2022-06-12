@@ -1,7 +1,7 @@
 package io.nigro.retroroutepuzzle.feature.route;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.nigro.retroroutepuzzle.feature.route.contract.RouteMapSavedRequest;
+import io.nigro.retroroutepuzzle.feature.route.contract.RouteSavedMapRequest;
 import io.nigro.retroroutepuzzle.feature.route.contract.RouteRequest;
 import io.nigro.retroroutepuzzle.feature.routeresult.RouteResultService;
 import io.nigro.retroroutepuzzle.feature.search.RoomTreeSearchType;
@@ -20,6 +20,7 @@ import java.util.List;
 import static io.nigro.retroroutepuzzle.fixtures.ByteArrayInputStreamFixtures.getByteArrayInputStreamResult;
 import static io.nigro.retroroutepuzzle.fixtures.RoomFixtures.getRooms;
 import static io.nigro.retroroutepuzzle.fixtures.RouteEventFixtures.getRouteEvents;
+import static io.nigro.retroroutepuzzle.fixtures.RouteRequestFixtures.getRouteRequest;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -47,16 +48,7 @@ class RouteControllerTest {
     @Test
     void searchRoute_BFS_shouldWork() throws Exception {
         var searchType = RoomTreeSearchType.BFS;
-        var itemToCollect = List.of("Item1", "Item2");
-        var startRoomId = 1L;
-        var rooms = getRooms();
-
-        var routeRequest = RouteRequest.builder()
-                .startRoomId(startRoomId)
-                .itemToCollect(itemToCollect)
-                .rooms(rooms)
-                .build();
-
+        var routeRequest = getRouteRequest();
 
         when(routeService.searchRoute(routeRequest, searchType)).thenReturn(getRouteEvents());
         when(routeResultService.saveRouteEvents(eq(getRouteEvents()), any()))
@@ -89,16 +81,7 @@ class RouteControllerTest {
     @Test
     void searchRoute_DFS_shouldWork() throws Exception {
         var searchType = RoomTreeSearchType.DFS;
-        var itemToCollect = List.of("Item1", "Item2");
-        var startRoomId = 1L;
-        var rooms = getRooms();
-
-        var routeRequest = RouteRequest.builder()
-                .startRoomId(startRoomId)
-                .itemToCollect(itemToCollect)
-                .rooms(rooms)
-                .build();
-
+        var routeRequest = getRouteRequest();
 
         when(routeService.searchRoute(routeRequest, searchType)).thenReturn(getRouteEvents());
         when(routeResultService.saveRouteEvents(eq(getRouteEvents()), any()))
@@ -131,16 +114,7 @@ class RouteControllerTest {
     @Test
     void searchRoute_shouldReturn400_invalidSearchType() throws Exception {
         var searchType = "InvalidSearchType";
-        var itemToCollect = List.of("Item1", "Item2");
-        var startRoomId = 1L;
-        var rooms = getRooms();
-
-        var routeRequest = RouteRequest.builder()
-                .startRoomId(startRoomId)
-                .itemToCollect(itemToCollect)
-                .rooms(rooms)
-                .build();
-
+        var routeRequest = getRouteRequest();
 
         mockMvc.perform(post("/api/route/search/" + searchType)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -155,7 +129,7 @@ class RouteControllerTest {
         var startRoomId = 1L;
         var roomMapId = "RoomMapId";
 
-        var routeRequest = RouteMapSavedRequest.builder()
+        var routeRequest = RouteSavedMapRequest.builder()
                 .startRoomId(startRoomId)
                 .itemToCollect(itemToCollect)
                 .build();
@@ -195,7 +169,7 @@ class RouteControllerTest {
         var startRoomId = 1L;
         var roomMapId = "RoomMapId";
 
-        var routeRequest = RouteMapSavedRequest.builder()
+        var routeRequest = RouteSavedMapRequest.builder()
                 .startRoomId(startRoomId)
                 .itemToCollect(itemToCollect)
                 .build();

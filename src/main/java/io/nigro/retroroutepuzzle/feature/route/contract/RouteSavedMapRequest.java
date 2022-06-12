@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class RouteMapSavedRequest implements IRouteRequest {
+public class RouteSavedMapRequest implements IRouteRequest {
 
     @NotNull
     private Long startRoomId;

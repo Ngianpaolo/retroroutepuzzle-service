@@ -1,7 +1,7 @@
 package io.nigro.retroroutepuzzle.feature.route;
 
 import io.nigro.retroroutepuzzle.feature.route.contract.IRouteRequest;
-import io.nigro.retroroutepuzzle.feature.route.contract.RouteMapSavedRequest;
+import io.nigro.retroroutepuzzle.feature.route.contract.RouteSavedMapRequest;
 import io.nigro.retroroutepuzzle.feature.route.contract.RouteRequest;
 import io.nigro.retroroutepuzzle.feature.route.model.RouteEvent;
 import io.nigro.retroroutepuzzle.feature.routeresult.RouteResultService;
@@ -50,7 +50,7 @@ public class RouteController {
     @PostMapping("/api/route/search/{searchType}/rooms/{roomMapId}")
     public ResponseEntity<Resource> searchRoute(@PathVariable(name = "searchType") RoomTreeSearchType searchType,
                                                    @PathVariable(name = "roomMapId") String roomMapId,
-                                                   @Valid @RequestBody RouteMapSavedRequest request) {
+                                                   @Valid @RequestBody RouteSavedMapRequest request) {
         String filename = getFilename(request, searchType);
 
         var routeEvents = routeService.searchRoute(request, searchType, roomMapId);
