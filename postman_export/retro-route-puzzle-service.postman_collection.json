@@ -582,7 +582,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\"rooms\":[{\"id\":1,\"name\":\"Hallway\",\"north\":2,\"objects\":[]},{\"id\":2,\"name\":\"Dining Room\",\"south\":1,\"west\":3,\"east\":4,\"objects\":[]},{\"id\":3,\"name\":\"Kitchen\",\"east\":2,\"objects\":[{\"name\":\"Knife\"}]},{\"id\":4,\"name\":\"Sun Room\",\"west\":2,\"objects\":[{\"name\":\"Potted Plant\"}]}]}"
+							"raw": "{\r\n    \"rooms\": [\r\n        {\r\n            \"id\": 1,\r\n            \"name\": \"Hallway\",\r\n            \"north\": 2,\r\n            \"objects\": []\r\n        },\r\n        {\r\n            \"id\": 2,\r\n            \"name\": \"Dining Room\",\r\n            \"south\": 1,\r\n            \"west\": 3,\r\n            \"east\": 4,\r\n            \"objects\": []\r\n        },\r\n        {\r\n            \"id\": 3,\r\n            \"name\": \"Kitchen\",\r\n            \"east\": 2,\r\n            \"objects\": [\r\n                {\r\n                    \"name\": \"Knife\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"id\": 4,\r\n            \"name\": \"Sun Room\",\r\n            \"west\": 2,\r\n            \"objects\": [\r\n                {\r\n                    \"name\": \"Potted Plant\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}"
 						},
 						"url": {
 							"raw": "localhost:9090/api/room-map",
