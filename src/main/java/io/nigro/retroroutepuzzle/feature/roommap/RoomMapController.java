@@ -24,19 +24,19 @@ public class RoomMapController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/retro-route-puzzle-service/room-map")
+    @PostMapping("/api/room-map")
     public RoomMapContract createRoomMap(@Valid @RequestBody RoomMapContract request) {
         return roomMapService.createRoomMap(request);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/retro-route-puzzle-service/room-map")
+    @GetMapping("/api/room-map")
     public List<RoomMapContract> getAllRoomMaps() {
         return roomMapService.getAllRoomMaps();
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/retro-route-puzzle-service/room-map/{roomMapId}")
+    @GetMapping("/api/room-map/{roomMapId}")
     public RoomMapContract getRoomMap(@PathVariable String roomMapId) {
         return roomMapService.getRoomMap(roomMapId);
     }

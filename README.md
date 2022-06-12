@@ -16,12 +16,12 @@
 # How it works
 
     # Create a new roomMap
-    curl --location --request POST 'localhost:9090/retro-route-puzzle-service/room-map' \
+    curl --location --request POST 'localhost:9090/api/room-map' \
     --header 'Content-Type: application/json' \
     --data-raw '{"rooms":[{"id":1,"name":"Hallway","north":2,"objects":[]},{"id":2,"name":"Dining Room","south":1,"west":3,"east":4,"objects":[]},{"id":3,"name":"Kitchen","east":2,"objects":[{"name":"Knife"}]},{"id":4,"name":"Sun Room","west":2,"objects":[{"name":"Potted Plant"}]}]}'
 
     # Get all roomMaps
-    curl --location --request GET 'localhost:9090/retro-route-puzzle-service/room-map
+    curl --location --request GET 'localhost:9090/api/room-map
 
     # Perform DFS search by passing list of rooms in parameters
     curl --location --request POST 'localhost:9090/api/route/search/DFS' \
