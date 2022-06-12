@@ -15,11 +15,11 @@
 
 # How it works
 
-    # APIs LIST
+    APIs LIST
 
-    # POST - localhost:9090/api/room-map
-    # Create or replace a roomMap (RoomMap will be saved under the folder storage/room_maps as JSON)
-    # Call Example:
+    \*\*POST - localhost:9090/api/room-map\*\*
+    Create or replace a roomMap (RoomMap will be saved under the folder storage/room_maps as JSON)
+    Call Example:
     curl --location --request POST 'localhost:9090/api/room-map' \
     --header 'Content-Type: application/json' \
     --data-raw '{"rooms":[{"id":1,"name":"Hallway","north":2,"objects":[]},{"id":2,"name":"Dining Room","south":1,"west":3,"east":4,"objects":[]},{"id":3,"name":"Kitchen","east":2,"objects":[{"name":"Knife"}]},{"id":4,"name":"Sun Room","west":2,"objects":[{"name":"Potted Plant"}]}]}'
