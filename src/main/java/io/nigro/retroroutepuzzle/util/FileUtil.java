@@ -1,6 +1,6 @@
 package io.nigro.retroroutepuzzle.util;
 
-import io.nigro.retroroutepuzzle.feature.route.contract.RouteEvent;
+import io.nigro.retroroutepuzzle.feature.route.model.RouteEvent;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.QuoteMode;

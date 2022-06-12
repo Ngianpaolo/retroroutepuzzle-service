@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.nigro.retroroutepuzzle.exception.RoomNotFoundException;
 import io.nigro.retroroutepuzzle.feature.roommap.model.Item;
 import io.nigro.retroroutepuzzle.feature.roommap.model.Room;
-import io.nigro.retroroutepuzzle.feature.route.contract.RouteEvent;
+import io.nigro.retroroutepuzzle.feature.route.model.RouteEvent;
 import io.nigro.retroroutepuzzle.feature.search.RoomTreeSearch;
 import io.nigro.retroroutepuzzle.feature.search.bfs.RoomBfsTreeSearch;
 import io.nigro.retroroutepuzzle.utils.JsonFileUtil;

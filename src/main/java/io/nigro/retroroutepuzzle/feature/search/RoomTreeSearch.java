@@ -1,9 +1,8 @@
 package io.nigro.retroroutepuzzle.feature.search;
 
 import io.nigro.retroroutepuzzle.feature.roommap.model.Room;
-import io.nigro.retroroutepuzzle.feature.route.contract.RouteEvent;
+import io.nigro.retroroutepuzzle.feature.route.model.RouteEvent;
 import io.nigro.retroroutepuzzle.feature.search.model.RoomNode;
-import org.apache.commons.text.CaseUtils;
 import org.apache.commons.text.WordUtils;
 
 import java.util.ArrayList;

@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class RouteRequest {
+public class RouteRequest implements IRouteRequest{
 
     @NotEmpty
     private List<Room> rooms;

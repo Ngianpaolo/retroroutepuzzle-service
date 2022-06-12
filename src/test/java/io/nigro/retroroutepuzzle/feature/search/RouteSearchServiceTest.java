@@ -1,6 +1,6 @@
 package io.nigro.retroroutepuzzle.feature.search;
 
-import io.nigro.retroroutepuzzle.feature.route.contract.RouteEvent;
+import io.nigro.retroroutepuzzle.feature.route.model.RouteEvent;
 import io.nigro.retroroutepuzzle.utils.JsonFileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,7 @@
 package io.nigro.retroroutepuzzle.feature.search;
 
 import io.nigro.retroroutepuzzle.feature.roommap.model.Room;
-import io.nigro.retroroutepuzzle.feature.route.contract.RouteEvent;
+import io.nigro.retroroutepuzzle.feature.route.model.RouteEvent;
 import io.nigro.retroroutepuzzle.feature.search.bfs.RoomBfsTreeSearch;
 import io.nigro.retroroutepuzzle.feature.search.dfs.RoomDfsTreeSearch;
 import org.springframework.stereotype.Service;

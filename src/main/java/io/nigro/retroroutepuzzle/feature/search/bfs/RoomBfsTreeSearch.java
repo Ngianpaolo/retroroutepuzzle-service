@@ -3,12 +3,10 @@ package io.nigro.retroroutepuzzle.feature.search.bfs;
 import io.nigro.retroroutepuzzle.exception.RoomNotFoundException;
 import io.nigro.retroroutepuzzle.feature.roommap.model.Item;
 import io.nigro.retroroutepuzzle.feature.roommap.model.Room;
-import io.nigro.retroroutepuzzle.feature.route.contract.RouteEvent;
 import io.nigro.retroroutepuzzle.feature.search.RoomTreeSearch;
 import io.nigro.retroroutepuzzle.feature.search.model.RoomNode;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;

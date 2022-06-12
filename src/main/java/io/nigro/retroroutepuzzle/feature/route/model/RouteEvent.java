@@ -1,4 +1,4 @@
-package io.nigro.retroroutepuzzle.feature.route.contract;
+package io.nigro.retroroutepuzzle.feature.route.model;
 
 import lombok.Builder;
 import lombok.Data;

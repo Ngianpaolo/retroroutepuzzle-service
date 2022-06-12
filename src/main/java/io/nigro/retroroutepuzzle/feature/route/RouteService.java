@@ -2,7 +2,7 @@ package io.nigro.retroroutepuzzle.feature.route;
 
 import io.nigro.retroroutepuzzle.exception.RoomMapNotFoundException;
 import io.nigro.retroroutepuzzle.feature.roommap.RoomMapRepository;
-import io.nigro.retroroutepuzzle.feature.route.contract.RouteEvent;
+import io.nigro.retroroutepuzzle.feature.route.model.RouteEvent;
 import io.nigro.retroroutepuzzle.feature.route.contract.RouteMapSavedRequest;
 import io.nigro.retroroutepuzzle.feature.route.contract.RouteRequest;
 import io.nigro.retroroutepuzzle.feature.search.RoomTreeSearchType;

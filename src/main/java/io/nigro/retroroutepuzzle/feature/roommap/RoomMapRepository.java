@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RoomMapRepository {
 
-    private final static String path = "./storage/";
+    private final static String path = "./storage/room_maps/";
     private final static String defaultRoomMapId = "defaultRoomMap";
 
     private final ObjectMapper objectMapper;
