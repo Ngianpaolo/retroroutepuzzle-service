@@ -11,6 +11,9 @@ public class ByteArrayInputStreamFixtures {
 
     private final static String path = "./src/test/resources/txt/";
 
+    public static ByteArrayInputStream getByteArrayInputStreamResult() {
+        return getByteArrayInputStreamResult("route_result_example");
+    }
     public static ByteArrayInputStream getByteArrayInputStreamResult(String filename) {
         File file = new File(String.format("%s%s.txt", path, filename));
         if (!file.exists()) {

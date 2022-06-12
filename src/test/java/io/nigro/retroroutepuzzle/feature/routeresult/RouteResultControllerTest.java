@@ -89,7 +89,7 @@ class RouteResultControllerTest {
         var size = 5;
 
         when(routeResultService.getLatestRouteResults(size)).thenReturn(getByteArrayInputStreamResult("route_result_example"));
-        mockMvc.perform(get("/api/route/results/historical?size=" +size)
+        mockMvc.perform(get("/api/route/results/historical?size=" + size)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/plain"))
