@@ -7,13 +7,15 @@ import io.nigro.retroroutepuzzle.feature.search.RoomTreeSearch;
 import io.nigro.retroroutepuzzle.feature.search.model.RoomNode;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
+/**
+ * Class that implements the Depth-first search on a room graph
+ */
 @Slf4j
 public class RoomDfsTreeSearch extends RoomTreeSearch {
 
@@ -21,10 +23,6 @@ public class RoomDfsTreeSearch extends RoomTreeSearch {
 
     public RoomDfsTreeSearch(List<Room> rooms) {
         super(rooms);
-    }
-
-    public void calculateRoomRoute(RoomNode roomNode, List<String> itemsToCollect) {
-        calculateDFSRouteEvents(roomNode, itemsToCollect);
     }
 
     public RoomNode initializeRoomGraph(Long roomRootId) {
@@ -41,6 +39,15 @@ public class RoomDfsTreeSearch extends RoomTreeSearch {
         return roomNodeRoot;
     }
 
+    public void calculateRoomRoute(RoomNode roomNode, List<String> itemsToCollect) {
+        calculateDFSRouteEvents(roomNode, itemsToCollect);
+    }
+
+    /**
+     * This method implements the logic of Depth-first search recursively
+     * @param visitedRoomNode actual room visited (The first room node is the root)
+     * @param itemsToCollect items to search for
+     */
     private void calculateDFSRouteEvents(RoomNode visitedRoomNode, List<String> itemsToCollect) {
         // No objects to look for
         if (itemsToCollect.isEmpty() || allRoomsAreVisited()) {

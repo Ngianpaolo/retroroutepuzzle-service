@@ -17,6 +17,9 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
+/**
+ * Class that implements the Breadth-first search on a room graph
+ */
 @Slf4j
 public class RoomBfsTreeSearch extends RoomTreeSearch {
 
@@ -55,6 +58,11 @@ public class RoomBfsTreeSearch extends RoomTreeSearch {
         calculateBFSRouteEvents(roomNode, itemsToCollect);
     }
 
+    /**
+     * This method implements the logic of Breadth-first search recursively
+     * @param visitedRoomNode actual room visited (The first room node is the root)
+     * @param itemsToCollect items to search for
+     */
     private void calculateBFSRouteEvents(RoomNode visitedRoomNode, List<String> itemsToCollect) {
         // No objects to look for
         if (itemsToCollect.isEmpty() || allRoomsAreVisited()) {
