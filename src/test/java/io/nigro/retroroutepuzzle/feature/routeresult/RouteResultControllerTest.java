@@ -1,9 +1,7 @@
 package io.nigro.retroroutepuzzle.feature.routeresult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.nigro.retroroutepuzzle.feature.roommap.RoomMapService;
-import io.nigro.retroroutepuzzle.feature.roommap.contract.RoomMapContract;
-import io.nigro.retroroutepuzzle.feature.roommap.model.Room;
+import io.nigro.retroroutepuzzle.feature.routeresult.contract.RouteResultContract;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +14,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static io.nigro.retroroutepuzzle.fixtures.ByteArrayInputStreamFixtures.getByteArrayInputStreamResult;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -35,85 +34,82 @@ class RouteResultControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private RoomMapService roomMapService;
+    private RouteResultService routeResultService;
 
     @Test
-    void createRoomMap_shouldWork() throws Exception {
-        var id = "roomMap1";
-
-        var roomMapContract = RoomMapContract.builder()
-                .id(id)
-                .rooms(List.of(
-                        Room.builder().id(1L).name("Sun Room").north(2L).build(),
-                        Room.builder().id(2L).name("Living room").south(1L).build()
+    void getAllRouteResults_shouldWork() throws Exception {
+        var roomMapContract = RouteResultContract.builder()
+                .routeResultIds(List.of(
+                        "id1",
+                        "id2",
+                        "id3"
                 ))
                 .build();
 
-        when(roomMapService.createRoomMap(roomMapContract)).thenReturn(roomMapContract);
-        mockMvc.perform(post("/api/room-map")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(roomMapContract)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", is(id)))
-                .andExpect(jsonPath("$.rooms[0].name", is("Sun Room")))
-                .andExpect(jsonPath("$.rooms[1].name", is("Living room")));
-    }
-
-    @Test
-    void getRoomMap_shouldWork() throws Exception {
-        var id = "roomMap1";
-
-        var roomMapContract = RoomMapContract.builder()
-                .id(id)
-                .rooms(List.of(
-                        Room.builder().id(1L).name("Sun Room").north(2L).build(),
-                        Room.builder().id(2L).name("Living room").south(1L).build()
-                ))
-                .build();
-
-        when(roomMapService.getRoomMap(id)).thenReturn(roomMapContract);
-        mockMvc.perform(get("/api/room-map/" + id)
+        when(routeResultService.getAllRouteResults()).thenReturn(roomMapContract);
+        mockMvc.perform(get("/api/route/results")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(roomMapContract)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(id)))
-                .andExpect(jsonPath("$.rooms[0].name", is("Sun Room")))
-                .andExpect(jsonPath("$.rooms[1].name", is("Living room")));
+                .andExpect(jsonPath("$.routeResultIds[0]", is("id1")))
+                .andExpect(jsonPath("$.routeResultIds[1]", is("id2")))
+                .andExpect(jsonPath("$.routeResultIds[2]", is("id3")));
     }
 
     @Test
-    void getAllRoomMaps_shouldWork() throws Exception {
-        var id = "roomMap1";
-        var id2 = "roomMap2";
+    void getRouteResultById_shouldWork() throws Exception {
+        var id = "route_result_example";
 
-        var roomMapContract = RoomMapContract.builder()
-                .id(id)
-                .rooms(List.of(
-                        Room.builder().id(1L).name("Room1").north(2L).build(),
-                        Room.builder().id(2L).name("Room2").south(1L).build()
-                ))
-                .build();
-
-        var roomMapContract2 = RoomMapContract.builder()
-                .id(id2)
-                .rooms(List.of(
-                        Room.builder().id(1L).name("Room3").north(2L).build(),
-                        Room.builder().id(2L).name("Room4").south(1L).build()
-                ))
-                .build();
-
-        when(roomMapService.getAllRoomMaps()).thenReturn(List.of(roomMapContract, roomMapContract2));
-        mockMvc.perform(get("/api/room-map")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(roomMapContract)))
+        when(routeResultService.getRouteResultById(id)).thenReturn(getByteArrayInputStreamResult(id));
+        mockMvc.perform(get("/api/route/results/" + id)
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is(id)))
-                .andExpect(jsonPath("$[0].rooms[0].name", is("Room1")))
-                .andExpect(jsonPath("$[0].rooms[1].name", is("Room2")))
-                .andExpect(jsonPath("$[1].id", is(id2)))
-                .andExpect(jsonPath("$[1].rooms[0].name", is("Room3")))
-                .andExpect(jsonPath("$[1].rooms[1].name", is("Room4")));
+                .andExpect(content().contentType("text/plain"))
+                .andExpect(content().string(
+                        " -------------------------------------------------------------------- \n" +
+                                " ID     \t Room               \t Object  collected         \n" +
+                                " -------------------------------------------------------------------- \n" +
+                                " 2       \t Dining  Room       \t None                                 \n" +
+                                " 1       \t Hallway               \t None                                 \n" +
+                                " 2       \t Dining  Room       \t None                                 \n" +
+                                " 4       \t Sun  Room             \t None                                 \n" +
+                                " 2       \t Dining  Room       \t None                                 \n" +
+                                " 3       \t Kitchen               \t Knife                               \n" +
+                                " 2       \t Dining  Room       \t None                                 \n" +
+                                " 5       \t Bedroom               \t None                                 \n" +
+                                " 6       \t Bathroom             \t None                                 \n" +
+                                " 5       \t Bedroom               \t None                                 \n" +
+                                " 2       \t Dining  Room       \t None                                 \n" +
+                                " 1       \t Hallway               \t None                                 \n" +
+                                " 7       \t Living  room       \t Potted  Plant                 \n"));
     }
 
+    @Test
+    void getLatestRouteResults_shouldWork() throws Exception {
+        var size = 5;
+
+        when(routeResultService.getLatestRouteResults(size)).thenReturn(getByteArrayInputStreamResult("route_result_example"));
+        mockMvc.perform(get("/api/route/results/historical?size=" +size)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/plain"))
+                .andExpect(content().string(
+                        " -------------------------------------------------------------------- \n" +
+                                " ID     \t Room               \t Object  collected         \n" +
+                                " -------------------------------------------------------------------- \n" +
+                                " 2       \t Dining  Room       \t None                                 \n" +
+                                " 1       \t Hallway               \t None                                 \n" +
+                                " 2       \t Dining  Room       \t None                                 \n" +
+                                " 4       \t Sun  Room             \t None                                 \n" +
+                                " 2       \t Dining  Room       \t None                                 \n" +
+                                " 3       \t Kitchen               \t Knife                               \n" +
+                                " 2       \t Dining  Room       \t None                                 \n" +
+                                " 5       \t Bedroom               \t None                                 \n" +
+                                " 6       \t Bathroom             \t None                                 \n" +
+                                " 5       \t Bedroom               \t None                                 \n" +
+                                " 2       \t Dining  Room       \t None                                 \n" +
+                                " 1       \t Hallway               \t None                                 \n" +
+                                " 7       \t Living  room       \t Potted  Plant                 \n"));
+    }
 
 }

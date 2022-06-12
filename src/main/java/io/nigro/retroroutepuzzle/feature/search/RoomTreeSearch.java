@@ -43,7 +43,7 @@ public abstract class RoomTreeSearch {
         if (itemsFound != null && !itemsFound.isEmpty()) {
             objectCollected = itemsFound.stream()
                     .map(Object::toString)
-                    .map(WordUtils::capitalize)
+                    .map(WordUtils::capitalizeFully)
                     .collect(Collectors.joining(", "));
         }
 
