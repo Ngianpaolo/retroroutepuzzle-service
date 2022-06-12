@@ -1,0 +1,649 @@
+{
+	"info": {
+		"_postman_id": "aaef992f-802f-4538-a0f8-8b2b6e20ea39",
+		"name": "retro-route-puzzle-service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "routesearch",
+			"item": [
+				{
+					"name": "[Find items by DFS] - localhost:9090/api/route/search/DFS",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"startRoomId\": 2,\r\n    \"itemToCollect\": [\r\n        \"Knife\",\r\n        \"Potted Plant\"\r\n    ],\r\n    \"rooms\": [\r\n        {\r\n            \"id\": 1,\r\n            \"name\": \"Hallway\",\r\n            \"north\": 2,\r\n            \"objects\": []\r\n        },\r\n        {\r\n            \"id\": 2,\r\n            \"name\": \"Dining Room\",\r\n            \"south\": 1,\r\n            \"west\": 3,\r\n            \"east\": 4,\r\n            \"objects\": []\r\n        },\r\n        {\r\n            \"id\": 3,\r\n            \"name\": \"Kitchen\",\r\n            \"east\": 2,\r\n            \"objects\": [\r\n                {\r\n                    \"name\": \"Knife\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"id\": 4,\r\n            \"name\": \"Sun Room\",\r\n            \"west\": 2,\r\n            \"objects\": [\r\n                {\r\n                    \"name\": \"Potted Plant\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "localhost:9090/api/route/search/DFS",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"route",
+								"search",
+								"DFS"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "localhost:9090/api/route/search/DFS",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"startRoomId\": 2,\r\n    \"itemToCollect\": [\r\n        \"Knife\",\r\n        \"Potted Plant\"\r\n    ],\r\n    \"rooms\": [\r\n        {\r\n            \"id\": 1,\r\n            \"name\": \"Hallway\",\r\n            \"north\": 2,\r\n            \"objects\": []\r\n        },\r\n        {\r\n            \"id\": 2,\r\n            \"name\": \"Dining Room\",\r\n            \"south\": 1,\r\n            \"west\": 3,\r\n            \"east\": 4,\r\n            \"objects\": []\r\n        },\r\n        {\r\n            \"id\": 3,\r\n            \"name\": \"Kitchen\",\r\n            \"east\": 2,\r\n            \"objects\": [\r\n                {\r\n                    \"name\": \"Knife\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"id\": 4,\r\n            \"name\": \"Sun Room\",\r\n            \"west\": 2,\r\n            \"objects\": [\r\n                {\r\n                    \"name\": \"Potted Plant\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}"
+								},
+								"url": {
+									"raw": "localhost:9090/api/route/search/DFS",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"route",
+										"search",
+										"DFS"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Content-Disposition",
+									"value": "attachment; filename=1655026822_start_room_id2_DFS.txt"
+								},
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 12 Jun 2022 09:40:22 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": " -------------------------------------------------------------------- \r\n ID     \t Room               \t Object  collected         \r\n -------------------------------------------------------------------- \r\n 2       \t Dining  Room       \t None                                 \r\n 1       \t Hallway               \t None                                 \r\n 2       \t Dining  Room       \t None                                 \r\n 4       \t Sun  Room             \t Potted  Plant                 \r\n 2       \t Dining  Room       \t None                                 \r\n 3       \t Kitchen               \t Knife                               \r\n"
+						}
+					]
+				},
+				{
+					"name": "[Find items by BFS] - localhost:9090/api/route/search/BFS",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"startRoomId\": 2,\r\n    \"itemToCollect\": [\r\n        \"Knife\",\r\n        \"Potted Plant\"\r\n    ],\r\n    \"rooms\": [\r\n        {\r\n            \"id\": 1,\r\n            \"name\": \"Hallway\",\r\n            \"north\": 2,\r\n            \"objects\": []\r\n        },\r\n        {\r\n            \"id\": 2,\r\n            \"name\": \"Dining Room\",\r\n            \"south\": 1,\r\n            \"west\": 3,\r\n            \"east\": 4,\r\n            \"objects\": []\r\n        },\r\n        {\r\n            \"id\": 3,\r\n            \"name\": \"Kitchen\",\r\n            \"east\": 2,\r\n            \"objects\": [\r\n                {\r\n                    \"name\": \"Knife\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"id\": 4,\r\n            \"name\": \"Sun Room\",\r\n            \"west\": 2,\r\n            \"objects\": [\r\n                {\r\n                    \"name\": \"Potted Plant\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "localhost:9090/api/route/search/BFS",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"route",
+								"search",
+								"BFS"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "localhost:9090/api/route/search/BFS",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"startRoomId\": 2,\r\n    \"itemToCollect\": [\r\n        \"Knife\",\r\n        \"Potted Plant\"\r\n    ],\r\n    \"rooms\": [\r\n        {\r\n            \"id\": 1,\r\n            \"name\": \"Hallway\",\r\n            \"north\": 2,\r\n            \"objects\": []\r\n        },\r\n        {\r\n            \"id\": 2,\r\n            \"name\": \"Dining Room\",\r\n            \"south\": 1,\r\n            \"west\": 3,\r\n            \"east\": 4,\r\n            \"objects\": []\r\n        },\r\n        {\r\n            \"id\": 3,\r\n            \"name\": \"Kitchen\",\r\n            \"east\": 2,\r\n            \"objects\": [\r\n                {\r\n                    \"name\": \"Knife\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"id\": 4,\r\n            \"name\": \"Sun Room\",\r\n            \"west\": 2,\r\n            \"objects\": [\r\n                {\r\n                    \"name\": \"Potted Plant\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}"
+								},
+								"url": {
+									"raw": "localhost:9090/api/route/search/BFS",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"route",
+										"search",
+										"BFS"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Content-Disposition",
+									"value": "attachment; filename=1655026839_start_room_id2_BFS.txt"
+								},
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 12 Jun 2022 09:40:39 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": " -------------------------------------------------------------------- \r\n ID     \t Room               \t Object  collected         \r\n -------------------------------------------------------------------- \r\n 2       \t Dining  Room       \t None                                 \r\n 1       \t Hallway               \t None                                 \r\n 2       \t Dining  Room       \t None                                 \r\n 4       \t Sun  Room             \t Potted  Plant                 \r\n 2       \t Dining  Room       \t None                                 \r\n 3       \t Kitchen               \t Knife                               \r\n"
+						}
+					]
+				},
+				{
+					"name": "[Find items in saved roomMap] - localhost:9090/api/route/search/:searchType/rooms/:roomMapId",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"startRoomId\": 7,\r\n    \"itemToCollect\": [\r\n        \"Knife\",\r\n        \"Potted Plant\"\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "localhost:9090/api/route/search/:searchType/rooms/:roomMapId",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"route",
+								"search",
+								":searchType",
+								"rooms",
+								":roomMapId"
+							],
+							"query": [
+								{
+									"key": null,
+									"value": "",
+									"disabled": true
+								}
+							],
+							"variable": [
+								{
+									"key": "searchType",
+									"value": "DFS",
+									"description": "DFS, BFS"
+								},
+								{
+									"key": "roomMapId",
+									"value": "RoomMap2",
+									"description": "filename under folder /storage/roommap/"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "localhost:9090/api/route/search/:searchType/rooms/:roomMapId",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"startRoomId\": 7,\r\n    \"itemToCollect\": [\r\n        \"Knife\",\r\n        \"Potted Plant\"\r\n    ]\r\n}"
+								},
+								"url": {
+									"raw": "localhost:9090/api/route/search/:searchType/rooms/:roomMapId",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"route",
+										"search",
+										":searchType",
+										"rooms",
+										":roomMapId"
+									],
+									"query": [
+										{
+											"key": null,
+											"value": "",
+											"disabled": true
+										}
+									],
+									"variable": [
+										{
+											"key": "searchType",
+											"value": "DFS",
+											"description": "DFS, BFS"
+										},
+										{
+											"key": "roomMapId",
+											"value": "RoomMap2",
+											"description": "filename under folder /storage/roommap/"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Content-Disposition",
+									"value": "attachment; filename=1655026866_start_room_id7_DFS.txt"
+								},
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 12 Jun 2022 09:41:06 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": " -------------------------------------------------------------------- \r\n ID     \t Room               \t Object  collected         \r\n -------------------------------------------------------------------- \r\n 7       \t Living  room       \t Potted  Plant                 \r\n 1       \t Hallway               \t None                                 \r\n 2       \t Dining  Room       \t None                                 \r\n 4       \t Sun  Room             \t None                                 \r\n 6       \t Bathroom             \t None                                 \r\n 5       \t Bedroom               \t None                                 \r\n 6       \t Bathroom             \t None                                 \r\n 4       \t Sun  Room             \t None                                 \r\n 2       \t Dining  Room       \t None                                 \r\n 3       \t Kitchen               \t Knife                               \r\n"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "routeresult",
+			"item": [
+				{
+					"name": "[Get list of route result ids] - localhost:9090/api/route/results",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:9090/api/route/results",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"route",
+								"results"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "localhost:9090/api/route/results",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9090/api/route/results",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"route",
+										"results"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 12 Jun 2022 09:39:47 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"routeResultId\": [\n        \"1655022906_start_room_id2_bfs\",\n        \"1655022981_start_room_id2_dfs\",\n        \"1655023602_start_room_id2_dfs\",\n        \"1655023609_start_room_id2_dfs\",\n        \"1655023676_start_room_id2_bfs\",\n        \"1655023720_start_room_id2_bfs\",\n        \"1655024064_start_room_id2_dfs\",\n        \"1655024154_start_room_id2_dfs\",\n        \"1655024161_start_room_id7_dfs\"\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "[Get a route result] - localhost:9090/api/route/results/:routeResultId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:9090/api/route/results/:routeResultId",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"route",
+								"results",
+								":routeResultId"
+							],
+							"variable": [
+								{
+									"key": "routeResultId",
+									"value": "1655022906_start_room_id2_bfs"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "localhost:9090/api/route/results/:routeResultId",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9090/api/route/results/:routeResultId",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"route",
+										"results",
+										":routeResultId"
+									],
+									"variable": [
+										{
+											"key": "routeResultId",
+											"value": "1655022906_start_room_id2_bfs"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Content-Disposition",
+									"value": "attachment; filename=1655022906_start_room_id2_bfs.txt"
+								},
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 12 Jun 2022 09:38:56 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": " -------------------------------------------------------------------- \r\n ID     \t Room               \t Object  collected         \r\n -------------------------------------------------------------------- \r\n 2       \t Dining  Room       \t None                                 \r\n 1       \t Hallway               \t None                                 \r\n 2       \t Dining  Room       \t None                                 \r\n 4       \t Sun  Room             \t None                                 \r\n 2       \t Dining  Room       \t None                                 \r\n 3       \t Kitchen               \t Knife                               \r\n 2       \t Dining  Room       \t None                                 \r\n 5       \t Bedroom               \t None                                 \r\n 6       \t Bathroom             \t None                                 \r\n 5       \t Bedroom               \t None                                 \r\n 2       \t Dining  Room       \t None                                 \r\n 1       \t Hallway               \t None                                 \r\n 7       \t Living  room       \t Potted  Plant                 \r\n"
+						}
+					]
+				},
+				{
+					"name": "[Get last n route results] - localhost:9090/api/route/results/historical",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:9090/api/route/results/historical?size=5",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"route",
+								"results",
+								"historical"
+							],
+							"query": [
+								{
+									"key": "size",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "localhost:9090/api/route/results/historical",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:9090/api/route/results/historical?size=5",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"api",
+										"route",
+										"results",
+										"historical"
+									],
+									"query": [
+										{
+											"key": "size",
+											"value": "5"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Content-Disposition",
+									"value": "attachment; filename=historical_1655028390.txt"
+								},
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 12 Jun 2022 10:06:30 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": " -------------------------------------------------------------------- \r\n ID     \t Room               \t Object  collected         \r\n -------------------------------------------------------------------- \r\n 2       \t Dining  Room       \t None                                 \r\n 1       \t Hallway               \t None                                 \r\n 7       \t Living  room       \t Potted  Plant                 \r\n 4       \t Sun  Room             \t None                                 \r\n 6       \t Bathroom             \t None                                 \r\n 5       \t Bedroom               \t None                                 \r\n 6       \t Bathroom             \t None                                 \r\n 4       \t Sun  Room             \t None                                 \r\n 7       \t Living  room       \t None                                 \r\n 1       \t Hallway               \t None                                 \r\n 2       \t Dining  Room       \t None                                 \r\n 3       \t Kitchen               \t Knife                               \r\n -------------------------------------------------------------------- \r\n ID     \t Room               \t Object  collected         \r\n -------------------------------------------------------------------- \r\n 7       \t Living  room       \t Potted  Plant                 \r\n 1       \t Hallway               \t None                                 \r\n 2       \t Dining  Room       \t None                                 \r\n 4       \t Sun  Room             \t None                                 \r\n 6       \t Bathroom             \t None                                 \r\n 5       \t Bedroom               \t None                                 \r\n 6       \t Bathroom             \t None                                 \r\n 4       \t Sun  Room             \t None                                 \r\n 2       \t Dining  Room       \t None                                 \r\n 3       \t Kitchen               \t Knife                               \r\n -------------------------------------------------------------------- \r\n ID     \t Room               \t Object  collected         \r\n -------------------------------------------------------------------- \r\n 2       \t Dining  Room       \t None                                 \r\n 1       \t Hallway               \t None                                 \r\n 2       \t Dining  Room       \t None                                 \r\n 4       \t Sun  Room             \t Potted  Plant                 \r\n 2       \t Dining  Room       \t None                                 \r\n 3       \t Kitchen               \t Knife                               \r\n -------------------------------------------------------------------- \r\n ID     \t Room               \t Object  collected         \r\n -------------------------------------------------------------------- \r\n 2       \t Dining  Room       \t None                                 \r\n 1       \t Hallway               \t None                                 \r\n 2       \t Dining  Room       \t None                                 \r\n 4       \t Sun  Room             \t Potted  Plant                 \r\n 2       \t Dining  Room       \t None                                 \r\n 3       \t Kitchen               \t Knife                               \r\n -------------------------------------------------------------------- \r\n ID     \t Room               \t Object  collected         \r\n -------------------------------------------------------------------- \r\n 7       \t Living  room       \t Potted  Plant                 \r\n 1       \t Hallway               \t None                                 \r\n 2       \t Dining  Room       \t None                                 \r\n 4       \t Sun  Room             \t None                                 \r\n 6       \t Bathroom             \t None                                 \r\n 5       \t Bedroom               \t None                                 \r\n 6       \t Bathroom             \t None                                 \r\n 4       \t Sun  Room             \t None                                 \r\n 2       \t Dining  Room       \t None                                 \r\n 3       \t Kitchen               \t Knife                               \r\n"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "roommap",
+			"item": [
+				{
+					"name": "[Create or Replace a RoomMap] - localhost:9090/api/room-map",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"rooms\":[{\"id\":1,\"name\":\"Hallway\",\"north\":2,\"objects\":[]},{\"id\":2,\"name\":\"Dining Room\",\"south\":1,\"west\":3,\"east\":4,\"objects\":[]},{\"id\":3,\"name\":\"Kitchen\",\"east\":2,\"objects\":[{\"name\":\"Knife\"}]},{\"id\":4,\"name\":\"Sun Room\",\"west\":2,\"objects\":[{\"name\":\"Potted Plant\"}]}]}"
+						},
+						"url": {
+							"raw": "localhost:9090/api/room-map",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"room-map"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Get All Saved RoomMaps] - localhost:9090/api/room-map",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:9090/api/room-map",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"room-map"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Get a Saved RoomMap] - localhost:9090/api/room-map/:roomMapId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:9090/api/room-map/:roomMapId",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"room-map",
+								":roomMapId"
+							],
+							"variable": [
+								{
+									"key": "roomMapId",
+									"value": "defaultRoomMap"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
