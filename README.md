@@ -218,17 +218,18 @@ GET localhost:9090/api/route/results
 
 #### Response Body
 
-    {
-		"routeResultIds": [
-        "1655022906_start_room_id2_bfs",
-        "1655022981_start_room_id2_dfs",
-        "1655023602_start_room_id2_dfs",
-        "1655023609_start_room_id2_dfs",
-        "1655023676_start_room_id2_bfs"
-		]
-	}
+        {
+        "routeResultIds":
+                [
+                "1655022906_start_room_id2_bfs",
+                "1655022981_start_room_id2_dfs",
+                "1655023602_start_room_id2_dfs",
+                "1655023609_start_room_id2_dfs",
+                "1655023676_start_room_id2_bfs"
+		        ]
+	    }
 
-### Get all stored roomMaps
+### Get a specific route result by id
 
 #### Request
 
@@ -259,7 +260,7 @@ GET localhost:9090/api/route/results/{routeResultId}
 	 7       	 Living  room       	 Potted  Plant                 
 
 
-### Get a specific saved roomMap
+### Get last n route results
 
 #### Request
 
