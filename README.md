@@ -1,4 +1,15 @@
 # RETRO ROUTE PUZZLE API application
+The purpose of the application is to search for a collection of objects in a room map through a HTTP API.
+
+## Some implementation details
+* The application implements two tree search algorithm:
+  * Depth-first search (**DFS**)
+  * Breadth-first search (**BFS**)
+* You can choose which algorithm to use through HTTP APIs.
+* You can save a room map and perform the chosen algorithm several times, passing only the id of the starting room and the objects to find.
+* The application provides REST APIs for the management of room maps.
+* Every saved room map is stored under ./storage/room_maps (you could manually add, edit or delete room maps directly here)
+* Every obtained result from a search is stored under ./storage/route_result.
 
 ## Docker Build
 
