@@ -1,5 +1,5 @@
 # RETRO ROUTE PUZZLE API application
-The purpose of the application is to search for a collection of objects in a room map through a HTTP API.
+The purpose of the application is to search for a collection of objects in a room map through HTTP APIs.
 
 ## Some implementation details
 * The application implements two tree search algorithm:
@@ -30,6 +30,9 @@ The purpose of the application is to search for a collection of objects in a roo
 # API
 
 The API to the example app is described below.
+
+For convenience you could import the postman export, it is located under postman_export/[retro-route-puzzle-service.postman_collection.json](postman_export/retro-route-puzzle-service.postman_collection.json) in the project root
+
 
 ## ROUTE SEARCH API
 
