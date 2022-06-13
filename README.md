@@ -29,7 +29,7 @@ The purpose of the application is to search for a collection of objects in a roo
 
 # API
 
-The API to the example app is described below.
+The API to the application is described below.
 
 For convenience you could import the postman export, it is located under postman_export/[retro-route-puzzle-service.postman_collection.json](postman_export/retro-route-puzzle-service.postman_collection.json) in the project root
 
