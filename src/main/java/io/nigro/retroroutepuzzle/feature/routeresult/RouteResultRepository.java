@@ -1,11 +1,14 @@
 package io.nigro.retroroutepuzzle.feature.routeresult;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.nigro.retroroutepuzzle.feature.route.model.RouteEvent;
 import io.nigro.retroroutepuzzle.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.io.ByteArrayInputStream;
@@ -31,7 +34,12 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RouteResultRepository {
 
-    private final static String path = "./storage/route_results/";
+    private final String path;
+
+    @Autowired
+    public RouteResultRepository(@Value("${io.nigro.retroroutepuzzle.storage.routeresults:./storage/route_results/}") String path) {
+        this.path = path;
+    }
 
     public ByteArrayInputStream save(List<RouteEvent> routeEvents, String filename) {
         var routeEventBytes = FileUtil.routeEventToCSV(routeEvents).readAllBytes();

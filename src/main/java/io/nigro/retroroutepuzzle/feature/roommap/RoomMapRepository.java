@@ -1,10 +1,12 @@
 package io.nigro.retroroutepuzzle.feature.roommap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.nigro.retroroutepuzzle.exception.RoomMapCreationException;
 import io.nigro.retroroutepuzzle.feature.roommap.contract.RoomMapContract;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
@@ -19,14 +21,16 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RoomMapRepository {
 
-    private final static String path = "./storage/room_maps/";
     private final static String defaultRoomMapId = "defaultRoomMap";
 
     private final ObjectMapper objectMapper;
+    private final String path;
 
     @Autowired
-    public RoomMapRepository(ObjectMapper objectMapper) {
+    public RoomMapRepository(ObjectMapper objectMapper,
+                             @Value("${io.nigro.retroroutepuzzle.storage.roommaps:./storage/room_maps/}") String path) {
         this.objectMapper = objectMapper;
+        this.path = path;
     }
 
     public RoomMapContract save(RoomMapContract request) {
@@ -35,9 +39,7 @@ public class RoomMapRepository {
             objectMapper.writeValue(new File(path + "" + defaultRoomMapId + ".json"), request);
             return request;
         } catch (IOException e) {
-            log.error("", e);
-            //TODO fare eccezione dedicata
-            throw new RuntimeException();
+            throw new RoomMapCreationException();
         }
     }
 
