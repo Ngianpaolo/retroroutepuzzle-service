@@ -34,9 +34,10 @@ public class RoomMapRepository {
     }
 
     public RoomMapContract save(RoomMapContract request) {
-        request.setId(Strings.isNotBlank(request.getId()) ? request.getId() : defaultRoomMapId);
+        var id = Strings.isNotBlank(request.getId()) ? request.getId() : defaultRoomMapId;
+        request.setId(id);
         try {
-            objectMapper.writeValue(new File(path + "" + defaultRoomMapId + ".json"), request);
+            objectMapper.writeValue(new File(path + "" + id + ".json"), request);
             return request;
         } catch (IOException e) {
             throw new RoomMapCreationException();
